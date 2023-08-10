@@ -16,6 +16,7 @@ def rawOSInfo(*args):
     ### Process Types
     * basePlatform: returns either `windows`, `mac`, or `linux` based on the system it is being run on. No arguments
     * baseKernel: returns `nt`, `darwin`, `linux` (REDUNDANT). 
+    * arch: returns processor architecture. Only supports linux or macOS for now
     * osver: returns os version string (takes arguments for whether you want specific version (e.g `12.6` or `10.0.22621.025`) or general version (e.g `12`(macOS 12), `11` (Windows 11)). 
     If the OS does not have a  specific version (e.g Fedora), version is returned same as general version
     * servicepack (Windows only): returns Windows service pack and OS Version (e.g [`"7", "SP1"]` or `["11", "22H2]` for Windows 11 22h2)
@@ -41,6 +42,9 @@ def rawOSInfo(*args):
 
     if args[0] == "basePlatform":
         return basePlatform()
+    elif args[0] == "arch":
+        arch = subprocess.Popen(['uname', '-m'], stdout=subprocess.PIPE)
+        return arch.stdout.read().strip().decode("utf-8")
     elif args[0] == "macos_buildnumber":
         buildnum_sp = subprocess.Popen(
             ['sw_vers -buildVersion'], shell=True, stdout=subprocess.PIPE)
