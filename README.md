@@ -16,4 +16,4 @@ Features:
 
 This code still has an extremely limited feature set and should not be used in production. 
 
-***THERE IS NO DOCUMENTATION***
+***THERE IS NO DOCUMENTATION YET. IF YOU REALLY WANT TO USE THIS, READ THE CODE. Documentation coming soon***
