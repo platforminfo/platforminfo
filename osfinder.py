@@ -30,6 +30,12 @@ def rawOSInfo(*args):
         return kernels(basePlatform())
     if args[0] == "basePlatform":
         return basePlatform()
+    elif args[0] == "macos_buildnumber":
+        buildnum_sp = subprocess.Popen(
+            ['sw_vers -buildVersion'], shell=True, stdout=subprocess.PIPE)
+        # stdout adds newlines and is in binary format by default, string format needed
+        buildnum = buildnum_sp.stdout.read().decode("utf-8").strip()
+        return buildnum
     elif args[0] == "baseKernel":
         return baseKernel()
     elif args[0] == "osver":
@@ -101,6 +107,3 @@ def rawOSInfo(*args):
         elif platform == "windows":
             # implement `wmic os get Caption,CSDVersion /value` for windows versions: buildver is still 10 on 11, writing a parser is too hard
             exit
-
-
-print(rawOSInfo("osver"))
