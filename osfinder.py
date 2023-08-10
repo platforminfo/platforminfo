@@ -29,7 +29,7 @@ def rawOSInfo(*args):
         kernels = {"linux": "linux", "darwin": "darwin", "windows": "nt"}
         return kernels(basePlatform())
 
-    def Parser(to_be_cut, filename, basestr):
+    def Parser(filename, to_be_cut, basestr):
         with open(filename) as file:
             x = dict()
             for line in file:
@@ -103,3 +103,6 @@ def rawOSInfo(*args):
         elif platform == "windows":
             # implement `wmic os get Caption,CSDVersion /value` for windows versions: buildver is still 10 on 11, writing a parser is too hard
             exit
+
+
+print(rawOSInfo("osver"))
