@@ -6,6 +6,16 @@ import sys
 import os
 import subprocess
 
+##########
+# Fixes: #
+##########
+
+# FIXME: class object that does not require a platform check every time command is run
+
+class PlatformError(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
 
 def rawOSInfo(*args):
     """ 
@@ -28,7 +38,7 @@ def rawOSInfo(*args):
 
     def baseKernel():
         kernels = {"linux": "linux", "darwin": "darwin", "windows": "nt"}
-        return kernels(basePlatform())
+        return kernels[basePlatform()]
 
     def Parser(filename, to_be_cut, basestr):
         with open(filename) as file:
@@ -38,21 +48,35 @@ def rawOSInfo(*args):
 
             version = x[basestr].strip()
         return version
-    # Main functions
+    
 
+    # Main functions
     if args[0] == "basePlatform":
         return basePlatform()
+    
+    elif args[0] == "kernelversion":
+        platform = basePlatform()
+        if platform in ["mac", "linux"]:
+            kernel = subprocess.Popen(['uname', '-r'], stdout=subprocess.PIPE)
+            return kernel.stdout.read().strip().decode("utf-8")
+
     elif args[0] == "arch":
         arch = subprocess.Popen(['uname', '-m'], stdout=subprocess.PIPE)
         return arch.stdout.read().strip().decode("utf-8")
+    
     elif args[0] == "macos_buildnumber":
-        buildnum_sp = subprocess.Popen(
-            ['sw_vers -buildVersion'], shell=True, stdout=subprocess.PIPE)
-        # stdout adds newlines and is in binary format by default, string format needed
-        buildnum = buildnum_sp.stdout.read().decode("utf-8").strip()
-        return buildnum
+        platform = basePlatform()
+        if platform != "mac":
+            raise PlatformError("macos_buildnumber function used on a non-Macintosh system")
+        else:
+            buildnum_sp = subprocess.Popen(
+                ['sw_vers -buildVersion'], shell=True, stdout=subprocess.PIPE)
+            buildnum = buildnum_sp.stdout.read().decode("utf-8").strip() # stdout adds newlines and is in binary format by default, string format needed
+            return buildnum
+    
     elif args[0] == "baseKernel":
         return baseKernel()
+    
     elif args[0] == "osver":
         # Function to determine base OS version (see above)
         platform = basePlatform()
@@ -109,4 +133,4 @@ def rawOSInfo(*args):
             exit
 
 
-print(rawOSInfo("osver"))
+print(rawOSInfo("baseKernel"))
