@@ -28,6 +28,17 @@ def rawOSInfo(*args):
     def baseKernel():
         kernels = {"linux": "linux", "darwin": "darwin", "windows": "nt"}
         return kernels(basePlatform())
+
+    def Parser(to_be_cut, filename, basestr):
+        with open(filename) as file:
+            x = dict()
+            for line in file:
+                x[line.split("=")[0]] = line.split(to_be_cut)[1]
+
+            version = x[basestr].strip()
+        return version
+    # Main functions
+
     if args[0] == "basePlatform":
         return basePlatform()
     elif args[0] == "baseKernel":
@@ -45,37 +56,22 @@ def rawOSInfo(*args):
             # Most OSes based on systemd have this file, plus some that are not systemd (e.g Devuan).
             # ID = distro name, VERSION_ID = version number
 
-            # FIXME: turn this repetitive code into a function to parse files; specify input as line to be found #
-
             if os.path.isfile("/etc/os-release"):
-                # Parses common os-release file
-                with open('/etc/os-release') as file:
-                    x = dict()
-                    for line in file:
-                        x[line.split("=")[0]] = line.split("=")[1]
-
-                    version = x['VERSION_ID'].strip()
-                return version
+                return Parser('/etc/os-release', '=', 'VERSION_ID')
 
             elif os.path.isfile("/usr/lib/os-release"):
                 # Some OSes have os-release in /usr/lib (uncommon)
-                with open('/usr/lib/os-release') as file:
-                    x = dict()
-                    for line in file:
-                        x[line.split("=")[0]] = line.split("=")[1]
+                # with open('/usr/lib/os-release') as file:
+                #     x = dict()
+                #     for line in file:
+                #         x[line.split("=")[0]] = line.split("=")[1]
 
-                    version = x['VERSION_ID'].strip()
-                return version
+                #     version = x['VERSION_ID'].strip()
+                # return version
+                return Parser('/usr/lib/os-release', '=', 'VERSION_ID')
 
             elif os.path.isfile("/etc/lsb-release"):
-                # LSB is usually a compatibility measure, but lsb parser added in the event that a compliant os-release is not found
-                with open('/etc/lsb-release') as file:
-                    x = dict()
-                    for line in file:
-                        x[line.split("=")[0]] = line.split("=")[1]
-
-                    version = x['VERSION_ID'].strip()
-                return version
+                return Parser('/etc/lsb-release', '=', 'DISTRIB_RELEASE')
 
             elif os.path.isfile("/usr/bin/lsb-release"):
                 version_sp = subprocess.Popen(
