@@ -12,10 +12,12 @@ import subprocess
 
 # FIXME: class object that does not require a platform check every time command is run
 
+
 class PlatformError(Exception):
     def __init__(self, message):
         self.message = message
         super().__init__(self.message)
+
 
 def rawOSInfo(*args):
     """ 
@@ -31,9 +33,10 @@ def rawOSInfo(*args):
     If the OS does not have a  specific version (e.g Fedora), version is returned same as general version
     * servicepack (Windows only): returns Windows service pack and OS Version (e.g [`"7", "SP1"]` or `["11", "22H2]` for Windows 11 22h2)
     * macos_buildnumber (macOS only): Returns macOS build numbers (e.g `22A8380` for Ventura 13.0, 18F132 for 10.14.5)
+    * kernelversion: returns kernel version (Windows vernel version and specific version number are the same)
     """
     def basePlatform():
-        bases = {"windows": "windows", "darwin": "mac", "linux": "linux"}
+        bases = {"win32": "windows", "darwin": "mac", "linux": "linux"}
         return bases[sys.platform]
 
     def baseKernel():
@@ -48,35 +51,38 @@ def rawOSInfo(*args):
 
             version = x[basestr].strip()
         return version
-    
 
     # Main functions
     if args[0] == "basePlatform":
         return basePlatform()
-    
+
     elif args[0] == "kernelversion":
         platform = basePlatform()
         if platform in ["mac", "linux"]:
             kernel = subprocess.Popen(['uname', '-r'], stdout=subprocess.PIPE)
             return kernel.stdout.read().strip().decode("utf-8")
+        elif platform == "windows":
+            pass
 
     elif args[0] == "arch":
         arch = subprocess.Popen(['uname', '-m'], stdout=subprocess.PIPE)
         return arch.stdout.read().strip().decode("utf-8")
-    
+
     elif args[0] == "macos_buildnumber":
         platform = basePlatform()
         if platform != "mac":
-            raise PlatformError("macos_buildnumber function used on a non-Macintosh system")
+            raise PlatformError(
+                "macos_buildnumber function used on a non-Macintosh system")
         else:
             buildnum_sp = subprocess.Popen(
                 ['sw_vers -buildVersion'], shell=True, stdout=subprocess.PIPE)
-            buildnum = buildnum_sp.stdout.read().decode("utf-8").strip() # stdout adds newlines and is in binary format by default, string format needed
+            # stdout adds newlines and is in binary format by default, string format needed
+            buildnum = buildnum_sp.stdout.read().decode("utf-8").strip()
             return buildnum
-    
+
     elif args[0] == "baseKernel":
         return baseKernel()
-    
+
     elif args[0] == "osver":
         # Function to determine base OS version (see above)
         platform = basePlatform()
@@ -94,14 +100,6 @@ def rawOSInfo(*args):
                 return Parser('/etc/os-release', '=', 'VERSION_ID')
 
             elif os.path.isfile("/usr/lib/os-release"):
-                # Some OSes have os-release in /usr/lib (uncommon)
-                # with open('/usr/lib/os-release') as file:
-                #     x = dict()
-                #     for line in file:
-                #         x[line.split("=")[0]] = line.split("=")[1]
-
-                #     version = x['VERSION_ID'].strip()
-                # return version
                 return Parser('/usr/lib/os-release', '=', 'VERSION_ID')
 
             elif os.path.isfile("/etc/lsb-release"):
@@ -130,7 +128,11 @@ def rawOSInfo(*args):
 
         elif platform == "windows":
             # implement `wmic os get Caption,CSDVersion /value` for windows versions: buildver is still 10 on 11, writing a parser is too hard
-            exit
+            version_sp = subprocess.Popen(
+                "wmic os get Name /VALUE", shell=True, stdout=subprocess.PIPE)
+            version = (version_sp.stdout.read().decode(
+                'utf-8').strip().split('|'))[0].split("=")[1]
+            return version
 
 
-print(rawOSInfo("baseKernel"))
+print(rawOSInfo("osver"))
