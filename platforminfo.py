@@ -7,10 +7,13 @@ import os
 import subprocess
 import winreg
 
+
 class PlatformError(Exception):
+
     def __init__(self, message):
         self.message = message
         super().__init__(self.message)
+
 
 def Parser(filename, to_be_cut, basestr):
     with open(filename) as file:
@@ -21,22 +24,25 @@ def Parser(filename, to_be_cut, basestr):
         version = x[basestr].strip()
     return version
 
+
 def basePlatform():
     bases = {"win32": "windows", "darwin": "mac", "linux": "linux"}
     return bases[sys.platform]
+
 
 def subprocess_postproc(x):
     return x.stdout.read().strip().decode("utf-8")
 
 
 class Platform:
+
     def __init__(self):
         self.platform = basePlatform()
 
     def basePlatform(self):
         return self.platform
-    
-    def kernelversion(self):
+
+    def kernelVersion(self):
         if self.platform in ["mac", "linux"]:
             kernel = subprocess.Popen(["uname", "-r"], stdout=subprocess.PIPE)
             return subprocess_postproc(kernel)
@@ -49,30 +55,38 @@ class Platform:
                     stdout=subprocess.PIPE,
                 )).split("|"))[0].split("=")[1].split(".")[:2])
             return version
-        
+
     def arch(self):
         if self.platform in ["mac", "linux"]:
             return subprocess_postproc(
                 subprocess.Popen(["uname", "-m"], stdout=subprocess.PIPE))
-        
-    def buildnumber(self):
+        else:
+            arch = os.environ['PROCESSOR_ARCHITECTURE']
+            arches = {'x86': 'x86', 'AMD64': 'x86_64', 'ARM64': 'aarch64'}
+            return arch
+
+    def buildNumber(self):
         if self.platform == "mac":
             buildnum = subprocess_postproc(
-                subprocess.Popen("sw_vers -buildVersion",shell=True,stdout=subprocess.PIPE))
+                subprocess.Popen("sw_vers -buildVersion",
+                                 shell=True,
+                                 stdout=subprocess.PIPE))
             return buildnum
 
         elif self.platform == "windows":
-            access_registry = winreg.ConnectRegistry(
-                None, winreg.HKEY_LOCAL_MACHINE)
+            access_registry = winreg.ConnectRegistry(None,
+                                                     winreg.HKEY_LOCAL_MACHINE)
             key = winreg.OpenKey(
                 access_registry,
                 r"SOFTWARE\Microsoft\Windows NT\CurrentVersion")
             value, type = winreg.QueryValueEx(key, "CurrentBuild")
             return value
         else:
-            raise PlatformError("PlatformInfo: buildnumber function used on a non-Macintosh/Windows system")
-        
-    def osversion(self):
+            raise PlatformError(
+                "PlatformInfo: buildnumber function used on a non-Macintosh/Windows system"
+            )
+
+    def osVersion(self):
         if self.platform == "linux":
             if os.path.isfile("/etc/os-release"):
                 return Parser("/etc/os-release", "=", "VERSION_ID")
