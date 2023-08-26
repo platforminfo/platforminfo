@@ -1,8 +1,7 @@
-<center>
+<p align="center">
   <img src="https://platforminfo.github.io/img/docusaurus.png">
-</center>
 
-**This is alpha quality code. Do not use this code in its current form unless you are prepared to see severely restricted functionality**
+**This is alpha quality code. Do not use this code in its current form unless you are ok with severely restricted functionality**
 
 System info for Python made simple.
 
@@ -15,3 +14,5 @@ Features:
 * Return architecture (Linux/Mac only, Windows planned)
 
 If you have a suggestion, (feel free to submit a feature request)[https://github.com/platforminfo/platforminfo/issues]
+
+</p>
