@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Upload Python Package
+name: Upload Python Package (Nightly builds)
 
 on:
   pull_request:
@@ -35,12 +35,12 @@ jobs:
       run: python -m build
     - name: Rename build artifacts
       run: |
-        mv dist/*.whl dist/build-nightly.whl
+        mv dist/*.whl build-nightly.whl
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.2
       with:
         # Artifact name
-        name: dist/*.whl
+        name: build-nightly.whl
         path: warn
         if-no-files-found: warn
         retention-days: 60
