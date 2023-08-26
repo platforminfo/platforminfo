@@ -13,6 +13,6 @@ Features:
 * Return OS build numbers for Windows, Mac (usually no build numbers on Linux)
 * Return architecture (Linux/Mac only, Windows planned)
 
-If you have a suggestion, (feel free to submit a feature request)[https://github.com/platforminfo/platforminfo/issues]
+If you have a suggestion, <a href=https://github.com/platforminfo/platforminfo/issues">feel free to submit a feature request</a>
 
 </p>
