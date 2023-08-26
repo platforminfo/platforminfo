@@ -32,10 +32,6 @@ jobs:
     - name: Build package
       run: python -m build
     - name: Publish package
-      run: [
-      pip install twine
-      twine upload dist/*
-      ]
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        pip install twine
+        twine upload dist/*
