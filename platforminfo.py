@@ -1,14 +1,18 @@
-# OSFinder v1.0.0
+# PlatformInfo v1.0.0
 # Tejas Raman, 2023
 # Licensed under MIT License
 
-import sys
 import os
 import subprocess
-import winreg
-import platforminfolib
+import sys
+from helper import platforminfolib
+
+if sys.platform == "win32":
+    import winreg
+
 
 class Platform:
+
     def __init__(self):
         bases = {"win32": "windows", "darwin": "mac", "linux": "linux"}
         self.platform = bases[sys.platform]
@@ -63,19 +67,23 @@ class Platform:
     def osVersion(self):
         if self.platform == "linux":
             if os.path.isfile("/etc/os-release"):
-                return platforminfolib.Parser("/etc/os-release", "=", "VERSION_ID")
+                return platforminfolib.Parser("/etc/os-release", "=",
+                                              "VERSION_ID")
 
             elif os.path.isfile("/usr/lib/os-release"):
-                return platforminfolib.Parser("/usr/lib/os-release", "=", "VERSION_ID")
+                return platforminfolib.Parser("/usr/lib/os-release", "=",
+                                              "VERSION_ID")
 
             elif os.path.isfile("/etc/lsb-release"):
-                return platforminfolib.Parser("/etc/lsb-release", "=", "DISTRIB_RELEASE")
+                return platforminfolib.Parser("/etc/lsb-release", "=",
+                                              "DISTRIB_RELEASE")
 
             elif os.path.isfile("/usr/bin/lsb-release"):
                 version_sp = subprocess.Popen("/usr/bin/lsb_release -r",
                                               shell=True,
                                               stdout=subprocess.PIPE)
-                version = (platforminfolib.subprocess_postproc(version_sp).split(":"))[1]
+                version = (platforminfolib.subprocess_postproc(
+                    version_sp).split(":"))[1]
                 return version
 
         elif self.platform == "mac":

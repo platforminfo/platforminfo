@@ -1,0 +1,26 @@
+# pyproject.toml
+
+[build-system]
+requires      = ["setuptools>=67.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "platforminfo"
+version = "1.0.0alpha1"
+description = "System info made easy - Python library to find system info on your computer."
+readme = "README.md"
+authors = [{ name = "Tejas Raman", email = "tejasraman@icloud.com" }]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["system", "os", "sysinfo", "winver", "osver", "osversion"]
+requires-python = ">=3.7"
+
+[project.optional-dependencies]
+dev = ["yapf"]
+
+[project.urls]
+Homepage = "https://github.com/platforminfo/platforminfo"
+
