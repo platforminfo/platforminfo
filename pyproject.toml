@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "platforminfo"
-version = "1.0.0ghauto6"
+version = "1.0.0alpha7"
 description = "System info made easy - Python library to find system info on your computer."
 readme = "README.md"
 authors = [{ name = "Tejas Raman", email = "tejasraman@icloud.com" }]
