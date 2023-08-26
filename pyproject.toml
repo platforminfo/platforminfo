@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "platforminfo"
-version = "1.0.0alpha1"
+version = "1.0.0alpha6"
 description = "System info made easy - Python library to find system info on your computer."
 readme = "README.md"
 authors = [{ name = "Tejas Raman", email = "tejasraman@icloud.com" }]
@@ -22,5 +22,7 @@ requires-python = ">=3.7"
 dev = ["yapf"]
 
 [project.urls]
-Homepage = "https://github.com/platforminfo/platforminfo"
+"Homepage" = "https://github.com/platforminfo/platforminfo"
+"Bug Tracker" = "https://github.com/platforminfo/platforminfo/issues"
+"Documentation" = "https://platforminfo.github.io"
 
