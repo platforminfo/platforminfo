@@ -1,4 +1,6 @@
-# PlatformInfo Python library
+<center>
+  <img src="https://platforminfo.github.io/img/docusaurus.png">
+</center>
 
 **This is alpha quality code. Do not use this code in its current form unless you are prepared to see severely restricted functionality**
 
