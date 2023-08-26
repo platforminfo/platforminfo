@@ -1,19 +1,15 @@
 # PlatformInfo Python library
 
-**This is alpha quality code. Do not use this code in its current form**
+**This is alpha quality code. Do not use this code in its current form unless you are prepared to see severely restricted functionality**
 
-Simple system info for Python.
-
+System info for Python made simple.
 
 
 Features:
 
-* Return kernel (kernel version coming soon)
-
-* Return OS version (general AND specific)
-
+* Return kernel AND kernel version for Mac, Windows, Linux
+* Return OS versions for Windows, Mac, Linux
+* Return OS build numbers for Windows, Mac (usually no build numbers on Linux)
 * Return architecture (Linux/Mac only, Windows planned)
 
-This code still has an extremely limited feature set and should not be used in production. 
-
-***THERE IS NO DOCUMENTATION YET. IF YOU REALLY WANT TO USE THIS, READ THE CODE. Documentation coming soon***
+If you have a suggestion, (feel free to submit a feature request)[https://github.com/platforminfo/platforminfo/issues]
