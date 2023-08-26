@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://platforminfo.github.io/img/docusaurus.png">
+  <span><img src="https://platforminfo.github.io/img/docusaurus.png"><h1>PlatformInfo</h1></span>
 
 **This is alpha quality code. Do not use this code in its current form unless you are ok with severely restricted functionality**
 
