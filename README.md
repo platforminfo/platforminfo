@@ -10,7 +10,7 @@ Features:
 
 * Return kernel AND kernel version for Mac, Windows, Linux
 * Return OS versions for Windows, Mac, Linux
-* Return OS build numbers for Windows, Mac (usually no build numbers on Linux)
+* Return OS build numbers for Windows, Mac
 * Return architecture (Linux/Mac only, Windows planned)
 
 If you have a suggestion, [feel free to submit a feature request](https://github.com/platforminfo/platforminfo/issues)
