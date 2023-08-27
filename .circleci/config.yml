@@ -2,7 +2,7 @@ version: 2.1
 executors:
   my-custom-executor:
     docker:
-      - image: cimg/python:3.11.5
+      - image: cimg/python:latest
         auth:
           # ensure you have first added these secrets
           # visit app.circleci.com/settings/project/github/platforminfo/platforminfo/environment-variables
@@ -23,6 +23,6 @@ jobs:
           destination: platforminfo-nightly.whl
 
 workflows:
-  my-custom-workflow:
+  build-nightly:
     jobs:
       - python-build
