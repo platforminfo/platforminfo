@@ -1,23 +1,28 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/configuration-reference
 version: 2.1
-
-orbs:
-  python-build: ffy00/python-build@0.0.2
-
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/configuration-reference/#jobs
-jobs:
-  example-job:
+executors:
+  my-custom-executor:
     docker:
-      # replace with your preferred image
-      - image: cimg/base:stable
+      - image: cimg/python
+        auth:
+          # ensure you have first added these secrets
+          # visit app.circleci.com/settings/project/github/platforminfo/platforminfo/environment-variables
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASSWORD
+jobs:
+  python-build:
+    executor: my-custom-executor
     steps:
-      - python-build/build:
-          path: . 
+      - checkout
+      - run: |
+          pip install yapf setuptools
+          python3 -m build
+          mv dist/*.whl /tmp/platforminfo.nightly.whl'
+      
+      - store_artifacts:
+          path: /tmp/platforminfo.nightly.whl
+          destination: platforminfo-nightly.whl
 
 workflows:
-  example-workflow:
+  my-custom-workflow:
     jobs:
-      - example-job
-
+      - python-build
