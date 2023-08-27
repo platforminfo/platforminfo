@@ -16,7 +16,7 @@ jobs:
       - run: |
           pip install yapf setuptools build
           python3 -m build
-          mv dist/*.whl /tmp/platforminfo.nightly.whl'
+          mv dist/*.whl /tmp/platforminfo.nightly.whl
       
       - store_artifacts:
           path: /tmp/platforminfo.nightly.whl
