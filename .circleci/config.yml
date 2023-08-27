@@ -14,7 +14,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          pip install yapf setuptools
+          pip install yapf setuptools build
           python3 -m build
           mv dist/*.whl /tmp/platforminfo.nightly.whl'
       
