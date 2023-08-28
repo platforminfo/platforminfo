@@ -2,7 +2,7 @@ version: 2.1
 executors:
   my-custom-executor:
     docker:
-      - image: cimg/python:3.11
+      - image: fedorapython/fedora-python-tox:latest
         auth:
           # ensure you have first added these secrets
           # visit app.circleci.com/settings/project/github/platforminfo/platforminfo/environment-variables
@@ -14,8 +14,8 @@ jobs:
     steps:
       - checkout
       - run: |
-          pip install yapf setuptools build
-          python3 -m build
+          pip3.11 install yapf setuptools build
+          python3.11 -m build
           mv dist/*.whl /tmp/platforminfo.nightly.whl
       
       - store_artifacts:
