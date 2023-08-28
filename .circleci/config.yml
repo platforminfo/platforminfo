@@ -8,6 +8,7 @@ executors:
           # visit app.circleci.com/settings/project/github/platforminfo/platforminfo/environment-variables
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASSWORD
+    resource_class: medium
 jobs:
   python-build:
     executor: my-custom-executor
