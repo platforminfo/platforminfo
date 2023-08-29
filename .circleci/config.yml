@@ -1,0 +1,29 @@
+version: 2.1
+executors:
+  my-custom-executor:
+    docker:
+      - image: fedorapython/fedora-python-tox:latest
+        auth:
+          # ensure you have first added these secrets
+          # visit app.circleci.com/settings/project/github/platforminfo/platforminfo/environment-variables
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASSWORD
+    resource_class: medium
+jobs:
+  python-build:
+    executor: my-custom-executor
+    steps:
+      - checkout
+      - run: |
+          pip3 install yapf setuptools build
+          python3 -m build
+          mv dist/*.whl /tmp/platforminfo.nightly.whl
+      
+      - store_artifacts:
+          path: /tmp/platforminfo.nightly.whl
+          destination: platforminfo-nightly.whl
+
+workflows:
+  build-nightly:
+    jobs:
+      - python-build
