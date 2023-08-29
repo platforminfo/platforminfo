@@ -26,4 +26,9 @@ jobs:
 workflows:
   build-nightly:
     jobs:
-      - python-build
+      - python-build:
+          filters:
+            branches:
+              only:
+                - development
+                - main
