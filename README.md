@@ -1,6 +1,5 @@
 <span> <p align="center"> <img src="https://platforminfo.github.io/img/docusaurus.png"><h1>PlatformInfo</h1></span>
-![CircleCI](https://img.shields.io/circleci/build/github/platforminfo/platforminfo/development?style=for-the-badge&labelColor=b2f6ff)
-![CircleCI](https://img.shields.io/circleci/build/github/platforminfo/platforminfo/main?style=for-the-badge&labelColor=%20%2300d4ff)
+![CircleCI](https://img.shields.io/circleci/build/github/platforminfo/platforminfo/development?style=for-the-badge&label=DEVELOPMENT%20BUILD&labelColor=89a100) ![CircleCI](https://img.shields.io/circleci/build/github/platforminfo/platforminfo/main?style=for-the-badge&&label=STABLE%20BUILD&labelColor=%20%2300d4ff)
 
 
 **This is alpha quality code. Do not use this code in its current form unless you are ok with severely restricted functionality**
