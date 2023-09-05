@@ -37,6 +37,14 @@ class Platform:
 
     def basePlatform(self):
         return self.platform
+    
+    def desktopEnvironment(self):
+        if self.platform not in ["linux"]:
+            raise PlatformError('DesktopEnvironment used on a non-Linux system')
+        else:
+            # FIXME: Make this apply to BSD, make this more universal
+            env = os.environ['XDG_CURRENT_DESKTOP']
+            return env
 
     def kernelVersion(self):
         if self.platform in ["mac", "linux"]:
