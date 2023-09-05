@@ -1,6 +1,8 @@
 <span> <p align="center"> <img src="https://platforminfo.github.io/img/docusaurus.png"><h1>PlatformInfo</h1></span>
 <span>![CircleCI](https://img.shields.io/circleci/build/github/platforminfo/platforminfo/development?style=for-the-badge&label=DEVELOPMENT%20BUILD&labelColor=6f6f6f)
 ![CircleCI](https://img.shields.io/circleci/build/github/platforminfo/platforminfo/main?style=for-the-badge&label=STABLE%20BUILD&labelColor=%236f6f6f)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/platforminfo?style=for-the-badge&labelColor=ad9b00)
+
 </span>
 
 
