@@ -16,3 +16,5 @@ Features:
 If you have a suggestion, [feel free to submit a feature request](https://github.com/platforminfo/platforminfo/issues)
 
 </p>
+
+[Development CI](https://app.circleci.com/pipelines/github/platforminfo/platforminfo?branch=development)
