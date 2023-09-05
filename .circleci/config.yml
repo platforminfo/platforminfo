@@ -28,7 +28,7 @@ jobs:
                 pipenv run twine upload /tmp/dist/*
                 mv /tmp/dist/*.whl /tmp/platforminfo-build.whl
       - store_artifacts:
-          path: /tmp/dist/platforminfo-build.whl
+          path: /tmp/platforminfo-build.whl
           destination: platforminfo-nightly.whl
 
 workflows:
