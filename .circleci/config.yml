@@ -32,7 +32,7 @@ jobs:
           mv dist/ /tmp/dist
           cp /tmp/dist/*.whl /tmp/platforminfo-build.whl
       - persist_to_workspace:
-          root: workspace
+          root: /
           paths:
             - "tmp/dist"
       - store_artifacts:
