@@ -43,10 +43,10 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: /tmp/dist
+          at: /
       - run:
           name: Upload package
-          command: ls -la /tmp/dist && echo "listed" && bash build-scripts-cci/pypi-upload.sh
+          command:  bash build-scripts-cci/pypi-upload.sh
 
   example-job:
     executor: executor-for-pytesting
