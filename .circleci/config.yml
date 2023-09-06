@@ -63,6 +63,8 @@ workflows:
                 - development
                 - main
       - pypi:
+          requires:
+              - python-build
           filters:
             branches:
               only:
