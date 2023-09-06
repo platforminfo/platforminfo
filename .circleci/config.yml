@@ -20,7 +20,7 @@ executors:
           # visit app.circleci.com/settings/project/github/platforminfo/platforminfo/environment-variables
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASSWORD
-    resource_class: medium
+    resource_class: large
 jobs:
   python-build:
     executor: my-custom-executor
@@ -36,12 +36,21 @@ jobs:
             equal: [ main, << pipeline.git.branch >> ]
           steps:
             - run: |
-                sudo pip install pipenv
+                sudo pip3 install pipenv
                 pipenv install twine
-                pipenv run twine upload /tmp/dist/*
+                pipenv run twine upload dist/*
       - store_artifacts:
           path: /tmp/platforminfo-build.whl
           destination: platforminfo-nightly.whl
+  pypi:
+    executor: my-custom-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: dist
+      - run:
+          name: Upload package
+          command: build-scripts-cci/pypi-upload.sh
   example-job:
     executor: executor-for-pytesting
     steps:
