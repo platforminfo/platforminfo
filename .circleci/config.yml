@@ -46,7 +46,7 @@ jobs:
           at: /tmp/dist
       - run:
           name: Upload package
-          command: bash build-scripts-cci/pypi-upload.sh
+          command: ls -la /tmp/dist && echo "listed" && bash build-scripts-cci/pypi-upload.sh
 
   example-job:
     executor: executor-for-pytesting
