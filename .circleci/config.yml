@@ -31,14 +31,10 @@ jobs:
           python3 -m build
           mv dist/ /tmp/dist
           cp /tmp/dist/*.whl /tmp/platforminfo-build.whl
-      - when:
-          condition:
-            equal: [ main, << pipeline.git.branch >> ]
-          steps:
-            - run: |
-                sudo pip3 install pipenv
-                pipenv install twine
-                pipenv run twine upload dist/*
+      - persist_to_workspace:
+          root: /
+          paths:
+            - tmp/dist
       - store_artifacts:
           path: /tmp/platforminfo-build.whl
           destination: platforminfo-nightly.whl
@@ -47,10 +43,11 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: dist
+          at: /
       - run:
           name: Upload package
-          command: build-scripts-cci/pypi-upload.sh
+          command:  bash build-scripts-cci/pypi-upload.sh
+
   example-job:
     executor: executor-for-pytesting
     steps:
@@ -69,4 +66,11 @@ workflows:
             branches:
               only:
                 - development
+                - main
+      - pypi:
+          requires:
+              - python-build
+          filters:
+            branches:
+              only:
                 - main
