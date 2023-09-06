@@ -67,7 +67,7 @@ class Platform:
         else:
             arch = os.environ['PROCESSOR_ARCHITECTURE']
             arches = {'x86': 'x86', 'AMD64': 'x86_64', 'ARM64': 'aarch64'}
-            return arches(arch)
+            return arches[arch]
 
     def buildNumber(self):
         if self.platform == "mac":
@@ -82,7 +82,7 @@ class Platform:
             key = winreg.OpenKey(
                 access_registry,
                 r"SOFTWARE\Microsoft\Windows NT\CurrentVersion")
-            value, type = winreg.QueryValueEx(key, "CurrentBuild")
+            value, typewin = winreg.QueryValueEx(key, "CurrentBuild")
             return value
         else:
             raise PlatformError(
