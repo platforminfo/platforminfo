@@ -16,6 +16,4 @@ Features:
 * Return desktop environments
 * Return architecture (Linux/Mac only, Windows planned)
 
-If you have a suggestion, [feel free to submit a feature request](https://github.com/platforminfo/platforminfo/issues). You can grab the nightly builds on our [Development CI](https://app.circleci.com/pipelines/github/platforminfo/platforminfo?branch=development) (you need to sign in to CircleCI to download these builds)
-
-</p>
+If you have a suggestion, [feel free to submit a feature request](https://github.com/platforminfo/platforminfo/issues). You can grab the nightly builds on our [Development CI](https://app.circleci.com/pipelines/github/platforminfo/platforminfo?branch=development)
