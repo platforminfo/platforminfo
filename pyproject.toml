@@ -26,3 +26,5 @@ dev = ["yapf", "coverage", "pytest", "codacy-coverage"]
 "Bug Tracker" = "https://github.com/platforminfo/platforminfo/issues"
 "Documentation" = "https://platforminfo.github.io"
 
+[tool.setuptools]
+packages = ["platforminfo"]
