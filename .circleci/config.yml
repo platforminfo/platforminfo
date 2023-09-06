@@ -5,7 +5,16 @@ orbs:
 executors:
   my-custom-executor:
     docker:
-      - image: fedorapython/fedora-python-tox:latest
+      - image: python:slim-bookworm
+        auth:
+          # ensure you have first added these secrets
+          # visit app.circleci.com/settings/project/github/platforminfo/platforminfo/environment-variables
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASSWORD
+    resource_class: medium
+  executor-for-pytesting:
+    docker:
+      - image: fedorapython/fedora-python-tox:f37
         auth:
           # ensure you have first added these secrets
           # visit app.circleci.com/settings/project/github/platforminfo/platforminfo/environment-variables
@@ -34,10 +43,11 @@ jobs:
           path: /tmp/platforminfo-build.whl
           destination: platforminfo-nightly.whl
   example-job:
-    docker:
-      # replace with your preferred image
-      - image: cimg/base:stable
+    executor: executor-for-pytesting
     steps:
+      - checkout
+      - run:
+          pip3 install coverage pytest 
       - coverage-reporter/send_report:
           project-token: b2bb25a02462405ea5fca0bbebc25131 
           skip: false 
@@ -51,10 +61,3 @@ workflows:
               only:
                 - development
                 - main
-  example-workflow:
-    jobs:
-      - example-job:
-          filters:
-            branches:
-              only:
-                - development
