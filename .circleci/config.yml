@@ -62,3 +62,8 @@ workflows:
               only:
                 - development
                 - main
+      - pypi:
+          filters:
+            branches:
+              only:
+                - main
