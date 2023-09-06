@@ -1,8 +1,20 @@
 version: 2.1
+orbs:
+  coverage-reporter: codacy/coverage-reporter@13.13.7
+
 executors:
   my-custom-executor:
     docker:
-      - image: fedorapython/fedora-python-tox:latest
+      - image: python:slim-bookworm
+        auth:
+          # ensure you have first added these secrets
+          # visit app.circleci.com/settings/project/github/platforminfo/platforminfo/environment-variables
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASSWORD
+    resource_class: medium
+  executor-for-pytesting:
+    docker:
+      - image: fedorapython/fedora-python-tox:f37
         auth:
           # ensure you have first added these secrets
           # visit app.circleci.com/settings/project/github/platforminfo/platforminfo/environment-variables
@@ -17,11 +29,28 @@ jobs:
       - run: |
           pip3 install yapf setuptools build
           python3 -m build
-          mv dist/*.whl /tmp/platforminfo.nightly.whl
-      
+          mv dist/ /tmp/dist
+          cp /tmp/dist/*.whl /tmp/platforminfo-build.whl
+      - when:
+          condition:
+            equal: [ main, << pipeline.git.branch >> ]
+          steps:
+            - run: |
+                sudo pip install pipenv
+                pipenv install twine
+                pipenv run twine upload /tmp/dist/*
       - store_artifacts:
-          path: /tmp/platforminfo.nightly.whl
+          path: /tmp/platforminfo-build.whl
           destination: platforminfo-nightly.whl
+  example-job:
+    executor: executor-for-pytesting
+    steps:
+      - checkout
+      - run:
+          pip3 install coverage pytest 
+      - coverage-reporter/send_report:
+          project-token: b2bb25a02462405ea5fca0bbebc25131 
+          skip: false 
 
 workflows:
   build-nightly:

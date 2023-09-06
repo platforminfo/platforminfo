@@ -37,7 +37,7 @@ class Platform:
 
     def basePlatform(self):
         return self.platform
-    
+
     def desktopEnvironment(self):
         if self.platform not in ["linux"]:
             raise PlatformError('DesktopEnvironment used on a non-Linux system')
@@ -67,7 +67,7 @@ class Platform:
         else:
             arch = os.environ['PROCESSOR_ARCHITECTURE']
             arches = {'x86': 'x86', 'AMD64': 'x86_64', 'ARM64': 'aarch64'}
-            return arch
+            return arches(arch)
 
     def buildNumber(self):
         if self.platform == "mac":
@@ -78,8 +78,7 @@ class Platform:
             return buildnum
 
         elif self.platform == "windows":
-            access_registry = winreg.ConnectRegistry(None,
-                                                     winreg.HKEY_LOCAL_MACHINE)
+            access_registry = winreg.ConnectRegistry(None, winreg.HKEY_LOCAL_MACHINE)
             key = winreg.OpenKey(
                 access_registry,
                 r"SOFTWARE\Microsoft\Windows NT\CurrentVersion")
