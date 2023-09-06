@@ -22,4 +22,4 @@ If you have a suggestion, [feel free to submit a feature request](https://github
 
 </p>
 
-[Development CI](https://app.circleci.com/pipelines/github/platforminfo/platforminfo?branch=development)
+You can grab the nightly builds on our [Development CI](https://app.circleci.com/pipelines/github/platforminfo/platforminfo?branch=development) (you need to sign in to CircleCI to download these builds)
