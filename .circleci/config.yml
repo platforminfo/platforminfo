@@ -42,6 +42,15 @@ jobs:
       - store_artifacts:
           path: /tmp/platforminfo-build.whl
           destination: platforminfo-nightly.whl
+  pypi:
+    executor: my-custom-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: dist
+      - run:
+          name: Upload package
+          command: build-scripts-cci/pypi-upload.sh
   example-job:
     executor: executor-for-pytesting
     steps:
