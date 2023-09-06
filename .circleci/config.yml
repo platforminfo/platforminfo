@@ -18,6 +18,7 @@ jobs:
           pip3 install yapf setuptools build
           python3 -m build
           mv dist/ /tmp/dist
+          cp /tmp/dist/*.whl /tmp/platforminfo-build.whl
       - when:
           condition:
             equal: [ main, << pipeline.git.branch >> ]
@@ -26,7 +27,6 @@ jobs:
                 sudo pip install pipenv
                 pipenv install twine
                 pipenv run twine upload /tmp/dist/*
-                mv /tmp/dist/*.whl /tmp/platforminfo-build.whl
       - store_artifacts:
           path: /tmp/platforminfo-build.whl
           destination: platforminfo-nightly.whl
