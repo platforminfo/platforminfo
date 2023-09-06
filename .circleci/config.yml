@@ -31,14 +31,6 @@ jobs:
           python3 -m build
           mv dist/ /tmp/dist
           cp /tmp/dist/*.whl /tmp/platforminfo-build.whl
-      - when:
-          condition:
-            equal: [ main, << pipeline.git.branch >> ]
-          steps:
-            - run: |
-                sudo pip3 install pipenv
-                pipenv install twine
-                pipenv run twine upload dist/*
       - store_artifacts:
           path: /tmp/platforminfo-build.whl
           destination: platforminfo-nightly.whl
