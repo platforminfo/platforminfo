@@ -1,4 +1,7 @@
 version: 2.1
+orbs:
+  coverage-reporter: codacy/coverage-reporter@13.13.7
+
 executors:
   my-custom-executor:
     docker:
@@ -30,6 +33,14 @@ jobs:
       - store_artifacts:
           path: /tmp/platforminfo-build.whl
           destination: platforminfo-nightly.whl
+  example-job:
+    docker:
+      # replace with your preferred image
+      - image: cimg/base:stable
+    steps:
+      - coverage-reporter/send_report:
+          project-token: b2bb25a02462405ea5fca0bbebc25131 
+          skip: false 
 
 workflows:
   build-nightly:
@@ -40,3 +51,10 @@ workflows:
               only:
                 - development
                 - main
+  example-workflow:
+    jobs:
+      - example-job:
+          filters:
+            branches:
+              only:
+                - development
