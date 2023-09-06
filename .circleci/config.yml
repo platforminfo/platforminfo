@@ -34,7 +34,7 @@ jobs:
       - persist_to_workspace:
           root: /
           paths:
-            - "tmp/dist"
+            - tmp/dist
       - store_artifacts:
           path: /tmp/platforminfo-build.whl
           destination: platforminfo-nightly.whl
