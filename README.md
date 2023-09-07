@@ -2,10 +2,12 @@
 <span>![CircleCI](https://img.shields.io/circleci/build/github/platforminfo/platforminfo/development?style=for-the-badge&label=DEVELOPMENT%20BUILD&labelColor=6f6f6f)
 ![CircleCI](https://img.shields.io/circleci/build/github/platforminfo/platforminfo/main?style=for-the-badge&label=STABLE%20BUILD&labelColor=%236f6f6f)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/platforminfo?style=for-the-badge&labelColor=ad9b00)
+![PyPI - Version](https://img.shields.io/pypi/v/platforminfo?style=for-the-badge&label=PyPi%20version&labelColor=%23ad9b00)
+![GitHub](https://img.shields.io/github/license/platforminfo/platforminfo?style=for-the-badge)
 
 </span>
 
-<script async id="asciicast-606618" src="https://asciinema.org/a/606618.js"></script>
+[![asciicast](https://asciinema.org/a/606618.svg)](https://asciinema.org/a/606618)
 
 System info for Python made simple.
 PlatformInfo is designed to provide a simple, yet granular interface to find system information on all major operating systems within Python.
