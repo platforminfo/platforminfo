@@ -5,8 +5,10 @@
 
 </span>
 
+[![asciicast](https://asciinema.org/a/606618.svg)](https://asciinema.org/a/606618)
+
 System info for Python made simple.
-PlatformInfo is designed to provide a granular interface to find system information on all major operating systems within Python.
+PlatformInfo is designed to provide a simple, yet granular interface to find system information on all major operating systems within Python.
 
 Features:
 
