@@ -4,6 +4,7 @@
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/platforminfo?style=for-the-badge&labelColor=ad9b00)
 ![PyPI - Version](https://img.shields.io/pypi/v/platforminfo?style=for-the-badge&label=PyPi%20version&labelColor=%23ad9b00)
 ![GitHub](https://img.shields.io/github/license/platforminfo/platforminfo?style=for-the-badge)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/platforminfo?style=for-the-badge&label=Downloads%20(past%20month%2C%20excl.%20mirrorbots)&labelColor=%23ad9b00)
 
 </span>
 
