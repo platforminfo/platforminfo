@@ -5,7 +5,7 @@
 
 </span>
 
-[![asciicast](https://asciinema.org/a/606618.svg)](https://asciinema.org/a/606618)
+<script async id="asciicast-606618" src="https://asciinema.org/a/606618.js"></script>
 
 System info for Python made simple.
 PlatformInfo is designed to provide a simple, yet granular interface to find system information on all major operating systems within Python.
