@@ -13,12 +13,43 @@
 System info for Python made simple.
 PlatformInfo is designed to provide a simple, yet granular interface to find system information on all major operating systems within Python.
 
-Features:
+## Features:
 
-* Return kernel AND kernel version for Mac, Windows, Linux
-* Return OS versions for Windows, Mac, Linux
-* Return OS build numbers for Windows, Mac
-* Return desktop environments
-* Return architecture (Linux/Mac only, Windows planned)
+*  Return kernel AND kernel version for Mac, Windows, Linux
+*  Return OS versions for Windows, Mac, Linux
+*  Return OS build numbers for Windows, Mac
+*  Return desktop environments
+*  Return architecture (Linux/Mac only, Windows planned)
 
-If you have a suggestion, [feel free to submit a feature request](https://github.com/platforminfo/platforminfo/issues). You can grab the nightly builds on our [Development CI](https://app.circleci.com/pipelines/github/platforminfo/platforminfo?branch=development)
+## Prerequisites
+*  Python 3 or up
+
+## Installation:
+To install PlatformInfo, you can download install it with pip (recommended) or install it from the development wheel.
+
+**PyPi install (recommended):**
+`pip install platforminfo`
+
+**Manual install**
+Download it from our [Development CI](https://app.circleci.com/pipelines/github/platforminfo/platforminfo?branch=development) and run `pip install /path/to/platforminfo-nightly.whl'
+
+## Quick Start Guide:
+TO start, import platforminfo and create a `Platform` object
+
+```python
+import platforminfo
+computer = platforminfo.Platform()
+```
+
+To access information, find the name of the information you want (in this example I want `osVersion`).
+
+```python
+import platforminfo
+computer = platforminfo.Platform()
+
+value = computer.osVersion()
+```
+
+## Feature Requests
+If you have a suggestion, [feel free to submit a feature request](https://github.com/platforminfo/platforminfo/issues).
+You can grab the nightly builds on our [Development CI](https://app.circleci.com/pipelines/github/platforminfo/platforminfo?branch=development)
