@@ -36,8 +36,7 @@ jobs:
           paths:
             - tmp/dist
       - store_artifacts:
-          path: /tmp/platforminfo-build.whl
-          destination: platforminfo-nightly.whl
+          path: /tmp/dist/
   pypi:
     executor: my-custom-executor
     steps:
