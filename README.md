@@ -1,5 +1,5 @@
 <span> <p align="center"> <img src="https://platforminfo.github.io/img/docusaurus.png"><h1>PlatformInfo <i>beta</i></h1></span>
-<span>![CircleCI](https://img.shields.io/circleci/build/github/platforminfo/platforminfo/development?style=for-the-badge&label=DEVELOPMENT%20BUILD&labelColor=%236f6f6f)
+<span>![CircleCI](https://img.shields.io/circleci/build/github/platforminfo/platforminfo/development?token=CCIPAT_UU1tyCCXq7xK7K8aDizkdk_2517470d414d4a5e8c8362a676c19a4e0a24883e&style=for-the-badge&label=DEVELOPMENT%20BUILD&labelColor=%236f6f6f)
 ![CircleCI](https://img.shields.io/circleci/build/github/platforminfo/platforminfo/main?style=for-the-badge&label=STABLE%20BUILD&labelColor=%236f6f6f)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/platforminfo?style=for-the-badge&labelColor=ad9b00)
 ![PyPI - Version](https://img.shields.io/pypi/v/platforminfo?style=for-the-badge&label=PyPi%20version&labelColor=%23ad9b00)
