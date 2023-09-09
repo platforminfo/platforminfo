@@ -6,6 +6,7 @@
 ![GitHub](https://img.shields.io/github/license/platforminfo/platforminfo?style=for-the-badge)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/platforminfo?style=for-the-badge&label=Downloads%20(past%20month%2C%20excl.%20mirrorbots)&labelColor=%23ad9b00)
 
+(ignore the stable fsiling, this was due to a PyPi reupload of the same wheel, which will not work; build is up to date and fine)
 </span>
 
 [![asciicast](https://asciinema.org/a/606618.svg)](https://asciinema.org/a/606618)
