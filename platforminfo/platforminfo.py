@@ -14,13 +14,12 @@ def subprocess_postproc(x):
 
 
 class PlatformError(Exception):
-
     def __init__(self, message):
         self.message = message
         super().__init__(self.message)
 
 
-def Parser(filename, to_be_cut, basestr):
+def parse_file(filename, to_be_cut, basestr):
     with open(filename) as file:
         x = dict()
         for line in file:
@@ -35,10 +34,10 @@ class Platform:
         bases = {"win32": "windows", "darwin": "mac", "linux": "linux", "bsd": "bsd"}
         self.platform = bases[sys.platform]
 
-    def basePlatform(self):
+    def base_platform(self):
         return self.platform
 
-    def desktopEnvironment(self):
+    def desktop_envoronment(self):
         if self.platform not in ["linux", "bsd"]:
             raise PlatformError('DesktopEnvironment used on a non-Linux/BSD system')
         else:
@@ -46,7 +45,7 @@ class Platform:
             env = os.environ['XDG_CURRENT_DESKTOP']
             return env
 
-    def kernelVersion(self):
+    def kenrel_version(self):
         if self.platform in ["mac", "linux", "bsd"]:
             kernel = subprocess.Popen(["uname", "-r"], stdout=subprocess.PIPE)
             return subprocess_postproc(kernel)
@@ -54,13 +53,12 @@ class Platform:
         elif self.platform == "windows":
             version = ".".join((subprocess_postproc(
                 subprocess.Popen(
-                    "wmic os get version /VALUE",
-                    shell=True,
+                    ["wmic" "os" "get" "version" "/VALUE"],
                     stdout=subprocess.PIPE,
                 )).split("|"))[0].split("=")[1].split(".")[:2])
             return version
 
-    def arch(self):
+    def os_architecture(self):
         if self.platform in ["mac", "linux", "bsd"]:
             return subprocess_postproc(
                 subprocess.Popen(["uname", "-m"], stdout=subprocess.PIPE))
@@ -72,11 +70,10 @@ class Platform:
                 return arches[arch]
             return arch
 
-    def buildNumber(self):
+    def build_number(self):
         if self.platform == "mac":
             buildnum = subprocess_postproc(
-                subprocess.Popen("sw_vers -buildVersion",
-                                 shell=True,
+                subprocess.Popen(["sw_vers" "-buildVersion"],
                                  stdout=subprocess.PIPE))
             return buildnum
 
@@ -92,24 +89,23 @@ class Platform:
                 "PlatformInfo: buildnumber function used on a non-Macintosh/Windows system"
             )
 
-    def osVersion(self):
+    def os_version(self):
         # BSD support here is WIP
         if self.platform == "linux":
             if os.path.isfile("/etc/os-release"):
-                return Parser("/etc/os-release", "=",
+                return parse_file("/etc/os-release", "=",
                                               "VERSION_ID")
 
             elif os.path.isfile("/usr/lib/os-release"):
-                return Parser("/usr/lib/os-release", "=",
+                return parse_file("/usr/lib/os-release", "=",
                                               "VERSION_ID")
 
             elif os.path.isfile("/etc/lsb-release"):
-                return Parser("/etc/lsb-release", "=",
+                return parse_file("/etc/lsb-release", "=",
                                               "DISTRIB_RELEASE")
 
             elif os.path.isfile("/usr/bin/lsb-release"):
-                version_sp = subprocess.Popen("/usr/bin/lsb_release -r",
-                                              shell=True,
+                version_sp = subprocess.Popen("/usr/bin/lsb_release" "-r",
                                               stdout=subprocess.PIPE)
                 version = (subprocess_postproc(
                     version_sp).split(":"))[1]
@@ -117,14 +113,12 @@ class Platform:
 
         elif self.platform == "mac":
             return subprocess_postproc(
-                subprocess.Popen(["sw_vers -productVersion"],
-                                 shell=True,
+                subprocess.Popen(["sw_vers" "-productVersion"],
                                  stdout=subprocess.PIPE))
 
         elif self.platform == "windows":
             version = (subprocess_postproc(
                 subprocess.Popen(
-                    "wmic os get Name /VALUE",
-                    shell=True,
+                    ["wmic" "os" "get" "Name" "/VALUE"],
                     stdout=subprocess.PIPE)).split("|"))[0].split("=")[1]
             return version
