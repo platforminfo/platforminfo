@@ -1,3 +1,3 @@
 from .platforminfo import Platform
 
-__version__ = "1.0.0beta2"
+__version__ = "1.0.0beta3"
