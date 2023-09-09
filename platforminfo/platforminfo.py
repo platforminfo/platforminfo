@@ -32,22 +32,22 @@ def Parser(filename, to_be_cut, basestr):
 
 class Platform:
     def __init__(self):
-        bases = {"win32": "windows", "darwin": "mac", "linux": "linux"}
+        bases = {"win32": "windows", "darwin": "mac", "linux": "linux", "bsd": "bsd"}
         self.platform = bases[sys.platform]
 
     def basePlatform(self):
         return self.platform
 
     def desktopEnvironment(self):
-        if self.platform not in ["linux"]:
-            raise PlatformError('DesktopEnvironment used on a non-Linux system')
+        if self.platform not in ["linux", "bsd"]:
+            raise PlatformError('DesktopEnvironment used on a non-Linux/BSD system')
         else:
             # FIXME: Make this apply to BSD, make this more universal
             env = os.environ['XDG_CURRENT_DESKTOP']
             return env
 
     def kernelVersion(self):
-        if self.platform in ["mac", "linux"]:
+        if self.platform in ["mac", "linux", "bsd"]:
             kernel = subprocess.Popen(["uname", "-r"], stdout=subprocess.PIPE)
             return subprocess_postproc(kernel)
 
@@ -61,13 +61,16 @@ class Platform:
             return version
 
     def arch(self):
-        if self.platform in ["mac", "linux"]:
+        if self.platform in ["mac", "linux", "bsd"]:
             return subprocess_postproc(
                 subprocess.Popen(["uname", "-m"], stdout=subprocess.PIPE))
         else:
             arch = os.environ['PROCESSOR_ARCHITECTURE']
-            arches = {'x86': 'x86', 'AMD64': 'x86_64', 'ARM64': 'aarch64'}
-            return arches[arch]
+            arches = {'AMD64': 'x86_64'
+                      'ARM64': 'aarch64'}
+            if arches[arch] != arch:
+                return arches[arch]
+            return arch
 
     def buildNumber(self):
         if self.platform == "mac":
@@ -90,6 +93,7 @@ class Platform:
             )
 
     def osVersion(self):
+        # BSD support here is WIP
         if self.platform == "linux":
             if os.path.isfile("/etc/os-release"):
                 return Parser("/etc/os-release", "=",
