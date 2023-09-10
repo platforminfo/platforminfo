@@ -1,4 +1,4 @@
-co# PlatformInfo v1.0.0
+# PlatformInfo v1.0.0
 # Copyright (c) 2023 Tejas Raman et. al
 
 # Permission is hereby granted, free of charge, to any person
@@ -121,7 +121,7 @@ class Platform:
             key = winreg.OpenKey(
                 access_registry,
                 r"SOFTWARE\Microsoft\Windows NT\CurrentVersion")
-            value, typewin = winreg.QueryValueEx(key, "CurrentBuild")
+            value = winreg.QueryValueEx(key, "CurrentBuild")
             return value
         else:
             raise PlatformError(
@@ -164,11 +164,11 @@ class Platform:
     def cpu_prettyname(self):
         if self.platform == "linux":
             return (parse_file("/proc/cpuinfo", ":", "model name"))
-    
-    def cpu_cores(self, type):
+
+    def cpu_cores(self, coreop):
         if self.platform == "linux":
             coretypes = {
                 "physical": 'cpu cores',
                 "logical": 'siblings'
             }
-        return int(parse_file("/proc/cpuinfo", ":", coretypes[type]))
+        return int(parse_file("/proc/cpuinfo", ":", coretypes[coreop]))
