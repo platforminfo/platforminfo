@@ -47,13 +47,14 @@ class Platform:
 
     def kenrel_version(self):
         if self.platform in ["mac", "linux", "bsd"]:
-            kernel = subprocess.Popen(["uname", "-r"], stdout=subprocess.PIPE)
+            kernel = subprocess.Popen("uname -r", shell=True, stdout=subprocess.PIPE)
             return subprocess_postproc(kernel)
 
         elif self.platform == "windows":
             version = ".".join((subprocess_postproc(
                 subprocess.Popen(
-                    ["wmic" "os" "get" "version" "/VALUE"],
+                    "wmic os get version /VALUE",
+                    shell=True,
                     stdout=subprocess.PIPE,
                 )).split("|"))[0].split("=")[1].split(".")[:2])
             return version
@@ -61,7 +62,7 @@ class Platform:
     def os_architecture(self):
         if self.platform in ["mac", "linux", "bsd"]:
             return subprocess_postproc(
-                subprocess.Popen(["uname", "-m"], stdout=subprocess.PIPE))
+                subprocess.Popen("uname -m", shell=True, stdout=subprocess.PIPE))
         else:
             arch = os.environ['PROCESSOR_ARCHITECTURE']
             arches = {'AMD64': 'x86_64'
@@ -73,7 +74,8 @@ class Platform:
     def build_number(self):
         if self.platform == "mac":
             buildnum = subprocess_postproc(
-                subprocess.Popen(["sw_vers" "-buildVersion"],
+                subprocess.Popen("sw_vers -buildVersion",
+                                 shell=True,
                                  stdout=subprocess.PIPE))
             return buildnum
 
@@ -105,7 +107,8 @@ class Platform:
                                               "DISTRIB_RELEASE")
 
             elif os.path.isfile("/usr/bin/lsb-release"):
-                version_sp = subprocess.Popen("/usr/bin/lsb_release" "-r",
+                version_sp = subprocess.Popen("/usr/bin/lsb_release -r",
+                                              shell=True,
                                               stdout=subprocess.PIPE)
                 version = (subprocess_postproc(
                     version_sp).split(":"))[1]
@@ -113,12 +116,14 @@ class Platform:
 
         elif self.platform == "mac":
             return subprocess_postproc(
-                subprocess.Popen(["sw_vers" "-productVersion"],
+                subprocess.Popen("sw_vers -productVersion",
+                                 shell=True,
                                  stdout=subprocess.PIPE))
 
         elif self.platform == "windows":
             version = (subprocess_postproc(
                 subprocess.Popen(
-                    ["wmic" "os" "get" "Name" "/VALUE"],
+                    "wmic os get Name /VALUE",
+                    shell=True,
                     stdout=subprocess.PIPE)).split("|"))[0].split("=")[1]
             return version
