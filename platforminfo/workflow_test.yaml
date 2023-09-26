@@ -1,0 +1,8 @@
+version: 1.0.0b3 #Platforminfo version
+
+workflow:
+  - action1: #action name
+    type: check #check or process
+    action: kernelVersion # PI call function
+    store: True #store value after
+    return: False #return value after

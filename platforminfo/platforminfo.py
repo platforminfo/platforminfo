@@ -5,6 +5,7 @@
 import os
 import subprocess
 import sys
+import yaml # workflow file support - pre-alpha
 
 if sys.platform == "win32":
     import winreg
