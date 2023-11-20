@@ -222,3 +222,7 @@ class Platform:
                 return int(ram)
             else:
                 return int(ram) / formats[format]
+        elif self.platform == 'linux':
+            # FIXME: test this before pushing to development
+            kbram = parse_file("/proc/meminfo", ":", "MemTotal")
+            return (kbram.split()*1000)/formats[format]
