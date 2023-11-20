@@ -189,3 +189,36 @@ class Platform:
                     stdout=subprocess.PIPE,
                 )).split("=")[1]
             return cores
+
+    def gpu_prettyname(self):
+        if self.platform == "windows":
+            access_registry = winreg.ConnectRegistry(
+                None, winreg.HKEY_LOCAL_MACHINE)
+            key = winreg.OpenKey(
+                access_registry,
+                r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinSAT")
+            value = winreg.QueryValueEx(key, "PrimaryAdapterString")[0].strip()
+            return value
+
+    def ram(self, format):
+        formats = {
+            "B": 1,
+            "KB": 1000,
+            "MB": 1000000,
+            "GB": 1000000000,
+            "TB": 1000000000000
+        }
+
+        if format not in formats.keys():
+            raise PlatformError("Invalid RAM format sprcified")
+
+        if self.platform == "windows":
+            ram = subprocess_postproc(
+                subprocess.Popen(
+                    f"wmic ComputerSystem get TotalPhysicalMemory /VALUE",
+                    stdout=subprocess.PIPE,
+                )).split("=")[1]
+            if format == "B":
+                return int(ram)
+            else:
+                return int(ram) / formats[format]
