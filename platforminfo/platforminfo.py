@@ -1,6 +1,6 @@
 # PlatformInfo v1.0.0
-# Copyright (c) 2023 Tejas Raman et. al
-
+# Copyright (c) 2023 Tejas Raman et al.
+#
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation
 # files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
 # copies of the Software, and to permit persons to whom the
 # Software is furnished to do so, subject to the following
 # conditions:
-
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 # OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -57,7 +57,6 @@ def parse_file(filename, to_be_cut, basestr):
 
 
 class Platform:
-
     def __init__(self):
         bases = {
             "win32": "windows",
@@ -90,7 +89,6 @@ class Platform:
             version = ".".join((subprocess_postproc(
                 subprocess.Popen(
                     "wmic os get version /VALUE",
-                    shell=True,
                     stdout=subprocess.PIPE,
                 )).split("|"))[0].split("=")[1].split(".")[:2])
             return version
@@ -116,8 +114,8 @@ class Platform:
             return buildnum
 
         elif self.platform == "windows":
-            access_registry = winreg.ConnectRegistry(None,
-                                                     winreg.HKEY_LOCAL_MACHINE)
+            access_registry = winreg.ConnectRegistry(
+                None, winreg.HKEY_LOCAL_MACHINE)
             key = winreg.OpenKey(
                 access_registry,
                 r"SOFTWARE\Microsoft\Windows NT\CurrentVersion")
@@ -165,10 +163,29 @@ class Platform:
         if self.platform == "linux":
             return (parse_file("/proc/cpuinfo", ":", "model name"))
 
+        elif self.platform == "windows":
+            access_registry = winreg.ConnectRegistry(
+                None, winreg.HKEY_LOCAL_MACHINE)
+            key = winreg.OpenKey(
+                access_registry,
+                r"HARDWARE\DESCRIPTION\System\CentralProcessor\0")
+            value = winreg.QueryValueEx(key, "ProcessorNameString")[0].strip()
+            return value
+
     def cpu_cores(self, coreop):
         if self.platform == "linux":
             coretypes = {
                 "physical": 'cpu cores',
                 "logical": 'siblings'
             }
-        return int(parse_file("/proc/cpuinfo", ":", coretypes[coreop]))
+            return int(parse_file("/proc/cpuinfo", ":", coretypes[coreop]))
+
+        elif self.platform == "windows":
+            coretypes_win = {"physical": "NumberOfCores",
+                             "logical": "NumberOfLogicalProcessors"}
+            cores = subprocess_postproc(
+                subprocess.Popen(
+                    f"wmic cpu get {coretypes_win[coreop]} /VALUE",
+                    stdout=subprocess.PIPE,
+                )).split("=")[1]
+            return cores
