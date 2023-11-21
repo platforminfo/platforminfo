@@ -27,6 +27,7 @@ import os
 import subprocess
 import sys
 
+# winreg is only available on win32 stdlib, so import is restricted to win32 to mitigate errors
 if sys.platform == "win32":
     import winreg
 
@@ -69,7 +70,7 @@ class Platform:
     def base_platform(self):
         return self.platform
 
-    def desktop_envoronment(self):
+    def desktop_environment(self):
         if self.platform not in ["linux", "bsd"]:
             raise PlatformError(
                 'DesktopEnvironment used on a non-Linux/BSD system')
@@ -78,7 +79,7 @@ class Platform:
             env = os.environ['XDG_CURRENT_DESKTOP']
             return env
 
-    def kenrel_version(self):
+    def kernel_version(self):
         if self.platform in ["mac", "linux", "bsd"]:
             kernel = subprocess.Popen("uname -r",
                                       shell=True,
