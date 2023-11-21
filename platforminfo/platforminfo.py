@@ -239,7 +239,7 @@ class Platform:
                    }
 
         if format not in formats.keys():
-            raise PlatformError("Invalid RAM format sprcified")
+            raise PlatformError("Invalid RAM format specified")
 
         if self.platform == "windows":
             ram = subprocess_postproc(
