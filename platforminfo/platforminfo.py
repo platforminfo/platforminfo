@@ -171,6 +171,11 @@ class Platform:
                 r"HARDWARE\DESCRIPTION\System\CentralProcessor\0")
             value = winreg.QueryValueEx(key, "ProcessorNameString")[0].strip()
             return value
+        elif self.platform == "mac":
+            cpu = subprocess_postproc(subprocess.Popen("sysctl machdep.cpu.brand_string  ",
+                                                       shell=True,
+                                                       stdout=subprocess.PIPE)).split(":")[1].strip()
+            return cpu
 
     def cpu_cores(self, coreop):
         if self.platform == "linux":
@@ -190,6 +195,14 @@ class Platform:
                 )).split("=")[1]
             return cores
 
+        elif self.platform == "mac":
+            coretypes_mac = {"physical": "core_count",
+                             "logical": "thread_count"}
+            cores = subprocess_postproc(subprocess.Popen(f"sysctl machdep.cpu.{coretypes_mac[coreop]}",
+                                                         shell=True,
+                                                         stdout=subprocess.PIPE)).split(":")[1].strip()
+            return cores
+
     def gpu_prettyname(self):
         if self.platform == "windows":
             access_registry = winreg.ConnectRegistry(
@@ -199,12 +212,25 @@ class Platform:
                 r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinSAT")
             value = winreg.QueryValueEx(key, "PrimaryAdapterString")[0].strip()
             return value
+        elif self.platform == "mac":
+            ###############################################
+            #           Warning, slow code ahead          #
+            # This needs to be fixed. Maybe you can FIXME? #
+            ###############################################
+
+            gpu = subprocess_postproc(subprocess.Popen('system_profiler SPDisplaysDataType | grep "Chipset Model"' # systemprofiler is intrisnically slow, need a different method,
+                                                       shell=True,
+                                                       stdout=subprocess.PIPE)).split(":")[1].strip()
+            return gpu
 
     def ram(self, format):
         formats = {
             "B": 1,
-            "KB": 1000,
+            "KB": 1024,
+            "kB": 1000,
+            "Kb": 125,
             "MB": 1000000,
+            "Mb": 125000,
             "GB": 1000000000,
             "TB": 1000000000000
         }
@@ -226,3 +252,10 @@ class Platform:
             # FIXME: test this before pushing to development
             kbram = parse_file("/proc/meminfo", ":", "MemTotal")
             return (kbram.split()*1000)/formats[format]
+
+
+computer = Platform()
+print(computer.cpu_prettyname())
+print(computer.cpu_cores("logical"))
+print(computer.cpu_cores("physical"))
+print(computer.gpu_prettyname())
