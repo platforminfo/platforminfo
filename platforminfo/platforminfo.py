@@ -213,27 +213,30 @@ class Platform:
             value = winreg.QueryValueEx(key, "PrimaryAdapterString")[0].strip()
             return value
         elif self.platform == "mac":
-            ###############################################
-            #           Warning, slow code ahead          #
-            # This needs to be fixed. Maybe you can FIXME? #
-            ###############################################
-
-            gpu = subprocess_postproc(subprocess.Popen('system_profiler SPDisplaysDataType | grep "Chipset Model"' # systemprofiler is intrisnically slow, need a different method,
+            #################################################
+            #           Warning, slow code ahead            #
+            #  This needs to be fixed. Maybe you can FIXME?  #
+            #################################################
+            gpu = subprocess_postproc(subprocess.Popen('system_profiler SPDisplaysDataType | grep "Chipset Model"',
                                                        shell=True,
                                                        stdout=subprocess.PIPE)).split(":")[1].strip()
             return gpu
 
     def ram(self, format):
-        formats = {
-            "B": 1,
-            "KB": 1024,
-            "kB": 1000,
-            "Kb": 125,
-            "MB": 1000000,
-            "Mb": 125000,
-            "GB": 1000000000,
-            "TB": 1000000000000
-        }
+
+        formats = {"KiB": [1024, 1],
+                   "MiB": [1024, 2],
+                   "GiB": [1024, 3],
+                   "TiB": [1024, 4],
+                   "PIB": [1024, 5],
+                   "EiB": [1024, 6],
+                   "KB": [1000, 1],
+                   "MB": [1000, 2],
+                   "GB": [1000, 3],
+                   "TB": [1000, 4],
+                   "PB": [1000, 5],
+                   "EB": [1000, 6]
+                   }
 
         if format not in formats.keys():
             raise PlatformError("Invalid RAM format sprcified")
@@ -247,15 +250,13 @@ class Platform:
             if format == "B":
                 return int(ram)
             else:
-                return int(ram) / formats[format]
+                return int(ram) / formats[format][0]**formats[format][1]
         elif self.platform == 'linux':
             # FIXME: test this before pushing to development
-            kbram = parse_file("/proc/meminfo", ":", "MemTotal")
-            return (kbram.split()*1000)/formats[format]
-
-
-computer = Platform()
-print(computer.cpu_prettyname())
-print(computer.cpu_cores("logical"))
-print(computer.cpu_cores("physical"))
-print(computer.gpu_prettyname())
+            ram = parse_file("/proc/meminfo", ":", "MemTotal")
+            return (ram.split()*1000)/formats[format][0]**formats[format][1]
+        elif self.platform == "mac":
+            ram = subprocess_postproc(subprocess.Popen("sysctl hw.memsize",
+                                                       shell=True,
+                                                       stdout=subprocess.PIPE)).split(":")[1].strip()
+            return int(ram)/formats[format][0]**formats[format][1]
