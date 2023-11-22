@@ -220,6 +220,7 @@ class Platform:
                 r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinSAT")
             value = winreg.QueryValueEx(key, "PrimaryAdapterString")[0].strip()
             return value
+
         elif self.platform == "mac":
             #################################################
             #           Warning, slow code ahead            #
@@ -242,11 +243,13 @@ class Platform:
             "PIB": [1024, 5],
             "EiB": [1024, 6],
             "KB": [1000, 1],
+            "kB": [1000, 1],
             "MB": [1000, 2],
             "GB": [1000, 3],
             "TB": [1000, 4],
             "PB": [1000, 5],
-            "EB": [1000, 6]
+            "EB": [1000, 6],
+            "B": [1, 1]
         }
 
         if format not in formats.keys():
@@ -263,13 +266,20 @@ class Platform:
             else:
                 return int(ram) / formats[format][0]**formats[format][1]
         elif self.platform == 'linux':
-            # FIXME: test this before pushing to development
+            # On Linux, the code includes system reserved RAM.
+            # This will hopefully be split, allowing the user to choose whether to represent reserved memory or not.
             ram = parse_file("/proc/meminfo", ":", "MemTotal")
-            return (ram.split() *
-                    1000) / formats[format][0]**formats[format][1]
+            x = ram.split()
+            return (int(x[0]) * formats[x[1]][0]**
+                    formats[x[1]][1]) / formats[format][0]**formats[format][1]
+
         elif self.platform == "mac":
             ram = subprocess_postproc(
                 subprocess.Popen(
                     "sysctl hw.memsize", shell=True,
                     stdout=subprocess.PIPE)).split(":")[1].strip()
             return int(ram) / formats[format][0]**formats[format][1]
+
+
+computer = Platform()
+print(computer.ram('GiB'))
