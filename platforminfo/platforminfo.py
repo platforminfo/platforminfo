@@ -1,5 +1,5 @@
 # PlatformInfo v1.0.0
-# Copyright (c) 2023 Tejas Raman et al.
+# Copyright (c) 2023 Tejas Raman
 #
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation
@@ -22,12 +22,11 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
-
 import os
 import subprocess
 import sys
 
-# winreg is only available on win32 stdlib, so import is restricted to win32 to mitigate errors
+# winreg is only available in the win32 python stdlib, so import is restricted to win32 to mitigate errors
 if sys.platform == "win32":
     import winreg
 
@@ -58,6 +57,7 @@ def parse_file(filename, to_be_cut, basestr):
 
 
 class Platform:
+
     def __init__(self):
         bases = {
             "win32": "windows",
@@ -76,6 +76,7 @@ class Platform:
                 'DesktopEnvironment used on a non-Linux/BSD system')
         else:
             # FIXME: Make this apply to BSD, make this more universal
+
             env = os.environ['XDG_CURRENT_DESKTOP']
             return env
 
@@ -97,7 +98,8 @@ class Platform:
     def os_architecture(self):
         if self.platform in ["mac", "linux", "bsd"]:
             return subprocess_postproc(
-                subprocess.Popen("uname -m", shell=True,
+                subprocess.Popen("uname -m",
+                                 shell=True,
                                  stdout=subprocess.PIPE))
         else:
             arch = os.environ['PROCESSOR_ARCHITECTURE']
@@ -115,8 +117,8 @@ class Platform:
             return buildnum
 
         elif self.platform == "windows":
-            access_registry = winreg.ConnectRegistry(
-                None, winreg.HKEY_LOCAL_MACHINE)
+            access_registry = winreg.ConnectRegistry(None,
+                                                     winreg.HKEY_LOCAL_MACHINE)
             key = winreg.OpenKey(
                 access_registry,
                 r"SOFTWARE\Microsoft\Windows NT\CurrentVersion")
@@ -165,30 +167,31 @@ class Platform:
             return (parse_file("/proc/cpuinfo", ":", "model name"))
 
         elif self.platform == "windows":
-            access_registry = winreg.ConnectRegistry(
-                None, winreg.HKEY_LOCAL_MACHINE)
+            access_registry = winreg.ConnectRegistry(None,
+                                                     winreg.HKEY_LOCAL_MACHINE)
             key = winreg.OpenKey(
                 access_registry,
                 r"HARDWARE\DESCRIPTION\System\CentralProcessor\0")
             value = winreg.QueryValueEx(key, "ProcessorNameString")[0].strip()
             return value
         elif self.platform == "mac":
-            cpu = subprocess_postproc(subprocess.Popen("sysctl machdep.cpu.brand_string  ",
-                                                       shell=True,
-                                                       stdout=subprocess.PIPE)).split(":")[1].strip()
+            cpu = subprocess_postproc(
+                subprocess.Popen(
+                    "sysctl machdep.cpu.brand_string  ",
+                    shell=True,
+                    stdout=subprocess.PIPE)).split(":")[1].strip()
             return cpu
 
     def cpu_cores(self, coreop):
         if self.platform == "linux":
-            coretypes = {
-                "physical": 'cpu cores',
-                "logical": 'siblings'
-            }
+            coretypes = {"physical": 'cpu cores', "logical": 'siblings'}
             return int(parse_file("/proc/cpuinfo", ":", coretypes[coreop]))
 
         elif self.platform == "windows":
-            coretypes_win = {"physical": "NumberOfCores",
-                             "logical": "NumberOfLogicalProcessors"}
+            coretypes_win = {
+                "physical": "NumberOfCores",
+                "logical": "NumberOfLogicalProcessors"
+            }
             cores = subprocess_postproc(
                 subprocess.Popen(
                     f"wmic cpu get {coretypes_win[coreop]} /VALUE",
@@ -197,17 +200,21 @@ class Platform:
             return cores
 
         elif self.platform == "mac":
-            coretypes_mac = {"physical": "core_count",
-                             "logical": "thread_count"}
-            cores = subprocess_postproc(subprocess.Popen(f"sysctl machdep.cpu.{coretypes_mac[coreop]}",
-                                                         shell=True,
-                                                         stdout=subprocess.PIPE)).split(":")[1].strip()
+            coretypes_mac = {
+                "physical": "core_count",
+                "logical": "thread_count"
+            }
+            cores = subprocess_postproc(
+                subprocess.Popen(
+                    f"sysctl machdep.cpu.{coretypes_mac[coreop]}",
+                    shell=True,
+                    stdout=subprocess.PIPE)).split(":")[1].strip()
             return cores
 
     def gpu_prettyname(self):
         if self.platform == "windows":
-            access_registry = winreg.ConnectRegistry(
-                None, winreg.HKEY_LOCAL_MACHINE)
+            access_registry = winreg.ConnectRegistry(None,
+                                                     winreg.HKEY_LOCAL_MACHINE)
             key = winreg.OpenKey(
                 access_registry,
                 r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinSAT")
@@ -218,26 +225,29 @@ class Platform:
             #           Warning, slow code ahead            #
             #  This needs to be fixed. Maybe you can FIXME?  #
             #################################################
-            gpu = subprocess_postproc(subprocess.Popen('system_profiler SPDisplaysDataType | grep "Chipset Model"',
-                                                       shell=True,
-                                                       stdout=subprocess.PIPE)).split(":")[1].strip()
+            gpu = subprocess_postproc(
+                subprocess.Popen(
+                    'system_profiler SPDisplaysDataType | grep "Chipset Model"',
+                    shell=True,
+                    stdout=subprocess.PIPE)).split(":")[1].strip()
             return gpu
 
     def ram(self, format):
-
-        formats = {"KiB": [1024, 1],
-                   "MiB": [1024, 2],
-                   "GiB": [1024, 3],
-                   "TiB": [1024, 4],
-                   "PIB": [1024, 5],
-                   "EiB": [1024, 6],
-                   "KB": [1000, 1],
-                   "MB": [1000, 2],
-                   "GB": [1000, 3],
-                   "TB": [1000, 4],
-                   "PB": [1000, 5],
-                   "EB": [1000, 6]
-                   }
+        # Format code consists of the unit and the power. PlatformInfo raises the number to the power when converted.
+        formats = {
+            "KiB": [1024, 1],
+            "MiB": [1024, 2],
+            "GiB": [1024, 3],
+            "TiB": [1024, 4],
+            "PIB": [1024, 5],
+            "EiB": [1024, 6],
+            "KB": [1000, 1],
+            "MB": [1000, 2],
+            "GB": [1000, 3],
+            "TB": [1000, 4],
+            "PB": [1000, 5],
+            "EB": [1000, 6]
+        }
 
         if format not in formats.keys():
             raise PlatformError("Invalid RAM format specified")
@@ -255,9 +265,11 @@ class Platform:
         elif self.platform == 'linux':
             # FIXME: test this before pushing to development
             ram = parse_file("/proc/meminfo", ":", "MemTotal")
-            return (ram.split()*1000)/formats[format][0]**formats[format][1]
+            return (ram.split() *
+                    1000) / formats[format][0]**formats[format][1]
         elif self.platform == "mac":
-            ram = subprocess_postproc(subprocess.Popen("sysctl hw.memsize",
-                                                       shell=True,
-                                                       stdout=subprocess.PIPE)).split(":")[1].strip()
-            return int(ram)/formats[format][0]**formats[format][1]
+            ram = subprocess_postproc(
+                subprocess.Popen(
+                    "sysctl hw.memsize", shell=True,
+                    stdout=subprocess.PIPE)).split(":")[1].strip()
+            return int(ram) / formats[format][0]**formats[format][1]
