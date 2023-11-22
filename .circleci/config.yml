@@ -14,7 +14,7 @@ executors:
     resource_class: medium
   executor-for-pytesting:
     docker:
-      - image: fedorapython/fedora-python-tox:f37
+      - image: fedorapython/fedora-python-tox:f39
         auth:
           # ensure you have first added these secrets
           # visit app.circleci.com/settings/project/github/platforminfo/platforminfo/environment-variables
