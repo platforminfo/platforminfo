@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "platforminfo"
-version = "1.0.0alpha401"
+version = "1.0.0beta4"
 description = "System info made easy - Python library to find system info on your computer."
 readme = "README.md"
 authors = [{ name = "Tejas Raman", email = "tejasraman@icloud.com" }]
@@ -16,7 +16,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
 ]
 keywords = ["system", "os", "sysinfo", "winver", "osver", "osversion"]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 
 [project.optional-dependencies]
 dev = ["yapf", "coverage", "pytest", "codacy-coverage"]

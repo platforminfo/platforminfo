@@ -266,8 +266,8 @@ class Platform:
             else:
                 return int(ram) / dataunits[dataunit][0]**dataunits[dataunit][1]
         elif self.platform == 'linux':
-            # On Linux, the code includes system reserved RAM.
-            # This will hopefully be split, allowing the user to choose whether to represent reserved memory or not.
+            # On Linux, the code excludes system reserved RAM. On Windows and macOS, implementations include system reserved RAM/
+            # This will hopefully be resolved for all platforms, allowing the user to choose whether to represent reserved memory or not.
             ram = parse_file("/proc/meminfo", ":", "MemTotal")
             x = ram.split()
             return (int(x[0]) * dataunits[x[1]][0] **
