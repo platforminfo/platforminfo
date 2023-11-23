@@ -1,0 +1,14 @@
+{
+    "editor.defaultFormatter": "eeyore.yapf",
+    "launch": {
+
+        "configurations": [],
+        "compounds": []
+    },
+    "yapf.args": [
+        "--style",
+        "{based_on_style: pep8, indent_width: 4}"
+    ],
+    "editor.fontSize": 11.75
+}
+
