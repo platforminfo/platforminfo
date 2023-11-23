@@ -1,4 +1,4 @@
-# PlatformInfo v1.0.0
+# PlatformInfo
 # Copyright (c) 2023 Tejas Raman
 #
 # Permission is hereby granted, free of charge, to any person
@@ -233,9 +233,9 @@ class Platform:
                     stdout=subprocess.PIPE)).split(":")[1].strip()
             return gpu
 
-    def ram(self, format):
-        # Format code consists of the unit and the power. PlatformInfo raises the number to the power when converted.
-        formats = {
+    def ram(self, dataunit):
+        # dataunit code consists of the unit and the power. PlatformInfo raises the number to the power when converted.
+        dataunits = {
             "KiB": [1024, 1],
             "MiB": [1024, 2],
             "GiB": [1024, 3],
@@ -252,8 +252,8 @@ class Platform:
             "B": [1, 1]
         }
 
-        if format not in formats.keys():
-            raise PlatformError("Invalid RAM format specified")
+        if dataunit not in dataunits.keys():
+            raise PlatformError("Invalid RAM dataunit specified")
 
         if self.platform == "windows":
             ram = subprocess_postproc(
@@ -261,25 +261,21 @@ class Platform:
                     f"wmic ComputerSystem get TotalPhysicalMemory /VALUE",
                     stdout=subprocess.PIPE,
                 )).split("=")[1]
-            if format == "B":
+            if dataunit == "B":
                 return int(ram)
             else:
-                return int(ram) / formats[format][0]**formats[format][1]
+                return int(ram) / dataunits[dataunit][0]**dataunits[dataunit][1]
         elif self.platform == 'linux':
             # On Linux, the code includes system reserved RAM.
             # This will hopefully be split, allowing the user to choose whether to represent reserved memory or not.
             ram = parse_file("/proc/meminfo", ":", "MemTotal")
             x = ram.split()
-            return (int(x[0]) * formats[x[1]][0]**
-                    formats[x[1]][1]) / formats[format][0]**formats[format][1]
+            return (int(x[0]) * dataunits[x[1]][0] **
+                    dataunits[x[1]][1]) / dataunits[dataunit][0]**dataunits[dataunit][1]
 
         elif self.platform == "mac":
             ram = subprocess_postproc(
                 subprocess.Popen(
                     "sysctl hw.memsize", shell=True,
                     stdout=subprocess.PIPE)).split(":")[1].strip()
-            return int(ram) / formats[format][0]**formats[format][1]
-
-
-computer = Platform()
-print(computer.ram('GiB'))
+            return int(ram) / dataunits[dataunit][0]**dataunits[dataunit][1]
