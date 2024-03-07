@@ -65,7 +65,11 @@ class Platform:
             "linux": "linux",
             "bsd": "bsd"
         }
-        self.platform = bases[sys.platform]
+
+        # finding platform:
+        for i in bases.keys:
+            if i in sys.platform:
+                self.platform = bases[sys.platform]
 
     def base_platform(self):
         return self.platform
@@ -96,17 +100,15 @@ class Platform:
             return version
 
     def os_architecture(self):
-        if self.platform in ["mac", "linux", "bsd"]:
+        if self.platform == "windows":
+            arch = os.environ['PROCESSOR_ARCHITECTURE']
+            arches = {'AMD64': 'x86_64', 'ARM64': 'aarch64'}
+            return arches[arch.upper()]
+        else:
             return subprocess_postproc(
                 subprocess.Popen("uname -m",
                                  shell=True,
                                  stdout=subprocess.PIPE))
-        else:
-            arch = os.environ['PROCESSOR_ARCHITECTURE']
-            arches = {'AMD64': 'x86_64', 'ARM64': 'aarch64'}
-            if arches[arch] != arch:
-                return arches[arch]
-            return arch
 
     def build_number(self):
         if self.platform == "mac":
@@ -131,22 +133,24 @@ class Platform:
 
     def os_version(self):
         # BSD support here is WIP
-        if self.platform == "linux":
+        if self.platform in ["linux", "bsd"]:
             if os.path.isfile("/etc/os-release"):
                 return parse_file("/etc/os-release", "=", "VERSION_ID")
 
             elif os.path.isfile("/usr/lib/os-release"):
                 return parse_file("/usr/lib/os-release", "=", "VERSION_ID")
 
-            elif os.path.isfile("/etc/lsb-release"):
-                return parse_file("/etc/lsb-release", "=", "DISTRIB_RELEASE")
+            if self.platform != "bsd":
+                if os.path.isfile("/etc/lsb-release"):
+                    return parse_file("/etc/lsb-release", "=",
+                                      "DISTRIB_RELEASE")
 
-            elif os.path.isfile("/usr/bin/lsb-release"):
-                version_sp = subprocess.Popen("/usr/bin/lsb_release -r",
-                                              shell=True,
-                                              stdout=subprocess.PIPE)
-                version = (subprocess_postproc(version_sp).split(":"))[1]
-                return version
+                elif os.path.isfile("/usr/bin/lsb-release"):
+                    version_sp = subprocess.Popen("/usr/bin/lsb_release -r",
+                                                  shell=True,
+                                                  stdout=subprocess.PIPE)
+                    version = (subprocess_postproc(version_sp).split(":"))[1]
+                    return version
 
         elif self.platform == "mac":
             return subprocess_postproc(
@@ -165,6 +169,13 @@ class Platform:
     def cpu_prettyname(self):
         if self.platform == "linux":
             return (parse_file("/proc/cpuinfo", ":", "model name"))
+
+        elif self.platform == "bsd":
+            cpu = (subprocess_postproc(
+                subprocess.Popen(
+                    "sysctl hw.model", shell=True,
+                    stdout=subprocess.PIPE)).split(":"))[1].strip()
+            return cpu
 
         elif self.platform == "windows":
             access_registry = winreg.ConnectRegistry(None,
@@ -199,6 +210,21 @@ class Platform:
                 )).split("=")[1]
             return cores
 
+        elif self.platform == 'bsd':
+            cores = int((subprocess_postproc(
+                subprocess.Popen(
+                    "sysctl hw.ncpu", shell=True,
+                    stdout=subprocess.PIPE)).split(":"))[1].strip())
+
+            if coreop == "physical":
+                return str(cores)
+            else:
+                threads = int((subprocess_postproc(
+                    subprocess.Popen(
+                        "sysctl kern.smp.threads_per_core",
+                        shell=True,
+                        stdout=subprocess.PIPE)).split(":"))[1].strip())
+                return str(cores * threads)
         elif self.platform == "mac":
             coretypes_mac = {
                 "physical": "core_count",
@@ -232,6 +258,9 @@ class Platform:
                     shell=True,
                     stdout=subprocess.PIPE)).split(":")[1].strip()
             return gpu
+        elif self.platform == "linux":
+            gpu = subprocess_postproc(subprocess.Popen(
+                'glxinfo | grep Device', shell=True, stdout=subprocess.PIPE)).split(":")[1].split("(")[0].strip()
 
     def ram(self, dataunit):
         # dataunit code consists of the unit and the power. PlatformInfo raises the number to the power when converted.
@@ -264,18 +293,26 @@ class Platform:
             if dataunit == "B":
                 return int(ram)
             else:
-                return int(ram) / dataunits[dataunit][0]**dataunits[dataunit][1]
+                return int(
+                    ram) / dataunits[dataunit][0]**dataunits[dataunit][1]
         elif self.platform == 'linux':
             # On Linux, the code excludes system reserved RAM. On Windows and macOS, implementations include system reserved RAM/
             # This will hopefully be resolved for all platforms, allowing the user to choose whether to represent reserved memory or not.
             ram = parse_file("/proc/meminfo", ":", "MemTotal")
             x = ram.split()
-            return (int(x[0]) * dataunits[x[1]][0] **
-                    dataunits[x[1]][1]) / dataunits[dataunit][0]**dataunits[dataunit][1]
+            return (int(x[0]) * dataunits[x[1]][0]**dataunits[x[1]][1]
+                    ) / dataunits[dataunit][0]**dataunits[dataunit][1]
 
         elif self.platform == "mac":
             ram = subprocess_postproc(
                 subprocess.Popen(
                     "sysctl hw.memsize", shell=True,
                     stdout=subprocess.PIPE)).split(":")[1].strip()
+            return int(ram) / dataunits[dataunit][0]**dataunits[dataunit][1]
+
+        elif self.platform == "bsd":
+            ram = int((subprocess_postproc(
+                subprocess.Popen(
+                    "sysctl hw.realmem", shell=True,
+                    stdout=subprocess.PIPE)).split(":"))[1].strip())
             return int(ram) / dataunits[dataunit][0]**dataunits[dataunit][1]
