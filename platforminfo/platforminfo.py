@@ -64,7 +64,7 @@ class Platform:
         }
 
         # finding platform:
-        for i in bases.keys:
+        for i in bases.keys():
             if i in sys.platform:
                 self.platform = bases[sys.platform]
 
