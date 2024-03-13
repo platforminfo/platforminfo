@@ -1,6 +1,3 @@
-# PlatformInfo
-# Copyright (c) 2023 Tejas Raman
-#
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation
 # files (the "Software"), to deal in the Software without
@@ -77,10 +74,8 @@ class Platform:
     def desktop_environment(self):
         if self.platform not in ["linux", "bsd"]:
             raise PlatformError(
-                'DesktopEnvironment used on a non-Linux/BSD system')
+                'Desktop environment property used on a non-Linux/BSD system')
         else:
-            # FIXME: Make this apply to BSD, make this more universal
-
             env = os.environ['XDG_CURRENT_DESKTOP']
             return env
 
@@ -258,6 +253,7 @@ class Platform:
                     shell=True,
                     stdout=subprocess.PIPE)).split(":")[1].strip()
             return gpu
+
         elif self.platform == "linux":
             gpu = subprocess_postproc(subprocess.Popen(
                 'glxinfo | grep Device', shell=True, stdout=subprocess.PIPE)).split(":")[1].split("(")[0].strip()
