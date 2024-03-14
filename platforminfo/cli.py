@@ -3,7 +3,7 @@ import strings
 
 import sys
 
-VERSION = "1.0.0-beta4-post1"
+VERSION = "1.0.0-beta5"
 computer = platforminfo.Platform()
 
 
