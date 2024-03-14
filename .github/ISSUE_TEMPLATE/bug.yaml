@@ -1,0 +1,46 @@
+name: Bug Report
+description: File a bug report
+title: "[BUG]: "
+labels: ["bug", "triage"]
+projects: ["platforminfo/3"]
+assignees:
+  - tejasraman
+body:
+  - type: textarea
+    id: issue
+    attributes:
+      label: Please describe the issue.
+      description:  Please include expected behavior in this report.
+      placeholder: Description:
+    validations:
+      required: false
+
+      
+  - type: textarea
+    id: version
+    attributes:
+      label: Please place the version number here.
+      description: If this was not tested on the latest version, please test before submitting
+      placeholder: Version:
+    validations:
+      required: false
+
+  - type: textarea
+    id: platform
+    attributes:
+      label: Platform(s) affected
+      description: Please list all affected platforms
+      placeholder: Platforms:
+    validations:
+      required: false
+
+
+      
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
