@@ -1,9 +1,9 @@
 [tool.poetry]
 name = "platforminfo"
-version = "1.0.0beta5.post1"
+version = "1.0.0beta5.post2"
 description = "System info for Python made simple. PlatformInfo is designed to provide a simple, yet granular interface to find system information on all major operating systems within Python."
 authors = ["Tejas Raman <tejasraman@icloud.com>"]
-license = "BSD 3-Clause"
+license = "BSD-3-Clause"
 readme = "README.md"
 
 [tool.poetry.dependencies]
