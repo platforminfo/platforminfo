@@ -27,27 +27,24 @@ Arguments:
     arg = sys.argv[1]
 
     if arg == "-help":
-        print(help_string)
+        return help_string
     elif arg == "-logical-cores":
-        print(computer.cpu_cores("logical"))
+        return computer.cpu_cores("logical")
     elif arg == "-physical-cores":
-        print(computer.cpu_cores("physical"))
+        return computer.cpu_cores("physical")
     elif arg == "-cpuname":
-        print(computer.cpu_prettyname())
+        return computer.cpu_prettyname()
     elif arg == "-desktop-environment":
-        print(computer.desktop_environment())
+        return computer.desktop_environment()
     elif arg == "-os-arch":
-        print(computer.os_architecture())
+        return computer.os_architecture()
     elif arg == "-kernel-version":
-        print(computer.kernel_version())
+        return computer.kernel_version()
     elif arg == "-os-version":
-        print(computer.os_version())
+        return computer.os_version()
     elif arg == "-buildnumber":
-        print(computer.build_number())
+        return computer.build_number()
     elif arg == "-gpuname":
-        print(computer.gpu_prettyname())
+        return computer.gpu_prettyname()
     elif arg == "-ram":
-        print(computer.ram({sys.argv[2]}))
-
-
-picli()
+        return computer.ram({sys.argv[2]})
