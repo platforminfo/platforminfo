@@ -11,7 +11,7 @@ body:
     attributes:
       label: Please describe the issue.
       description:  Please include expected behavior in this report.
-      placeholder: Description:
+      placeholder: Description
     validations:
       required: false
 
@@ -21,7 +21,7 @@ body:
     attributes:
       label: Please place the version number here.
       description: If this was not tested on the latest version, please test before submitting
-      placeholder: Version:
+      placeholder: Version
     validations:
       required: false
 
@@ -30,7 +30,7 @@ body:
     attributes:
       label: Platform(s) affected
       description: Please list all affected platforms
-      placeholder: Platforms:
+      placeholder: Platforms
     validations:
       required: false
 
