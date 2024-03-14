@@ -27,8 +27,8 @@ jobs:
     steps:
       - checkout
       - run: |
-          pip3 install yapf setuptools build
-          python3 -m build
+          pip3 install yapf setuptools poetry
+          python3 -m poetry build
           mv dist/ /tmp/dist
           cp /tmp/dist/*.whl /tmp/platforminfo-build.whl
       - persist_to_workspace:
