@@ -1,30 +1,23 @@
-# pyproject.toml
-
-[build-system]
-requires      = ["setuptools>=67.0.0", "wheel"]
-build-backend = "setuptools.build_meta"
-
-[project]
+[tool.poetry]
 name = "platforminfo"
 version = "1.0.0beta4.post1"
-description = "System info made easy - Python library to find system info on your computer."
+description = "System info for Python made simple. PlatformInfo is designed to provide a simple, yet granular interface to find system information on all major operating systems within Python."
+authors = ["Tejas Raman <tejasraman@icloud.com>"]
+license = "BSD 3-Clause"
 readme = "README.md"
-authors = [{ name = "Tejas Raman", email = "tejasraman@icloud.com" }]
-classifiers = [
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3",
-]
-keywords = ["system", "os", "sysinfo", "winver", "osver", "osversion"]
-requires-python = ">=3.8"
 
-[project.optional-dependencies]
-dev = ["yapf", "coverage", "pytest", "codacy-coverage"]
+[tool.poetry.dependencies]
+python = "^3.8"
 
-[project.urls]
-"Homepage" = "https://github.com/platforminfo/platforminfo"
-"Bug Tracker" = "https://github.com/platforminfo/platforminfo/issues"
-"Documentation" = "https://platforminfo.github.io"
+[tool.poetry.group.dev.dependencies]
+yapf = "^0.40.2"
+codacy-coverage = "^1.3.11"
+pytest = "^7.3.0"
+coverage = "^7.4.0"
 
-[tool.setuptools]
-packages = ["platforminfo"]
+[tool.poetry.scripts]
+platforminfo = "platforminfo.cli:picli"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
