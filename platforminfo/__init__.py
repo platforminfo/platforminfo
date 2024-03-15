@@ -1,3 +1,5 @@
 from .platforminfo import Platform
+from importlib.metadata import version
 
-__version__ = "1.0.0beta4"
+
+__version__ = version("platforminfo")
