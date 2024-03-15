@@ -6,16 +6,16 @@ from importlib.metadata import version
 VERSION = version("plarforminfo")
 computer = platforminfo.Platform()
 
-ramunits = {'KiB', 'MiB', 'GiB', 'TiB', 'PIB', 'EiB',
+RAMUNITS = {'KiB', 'MiB', 'GiB', 'TiB', 'PIB', 'EiB',
             'KB', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'B'}
 
-args_approved = {"-cpuinfo", "-logical-cores", "-physical-cores", "-cpuname",
-                 "-desktop-environment", "-os-arch", "-build-number", "-gpuname", "-ram"}
+ARGS_ALLOWED = {"-cpuinfo", "-logical-cores", "-physical-cores", "-cpuname",
+                "-desktop-environment", "-os-arch", "-build-number", "-gpuname", "-ram", "-version"}
 
 
 def picli():
 
-    if len(sys.argv) < 2 or sys.argv[1] not in args_approved:
+    if len(sys.argv) < 2 or sys.argv[1] not in ARGS_ALLOWED:
         print("""
 Usage: platform [arguments] [parameters]
 To view all arguments, use\x1B[3m platforminfo -help\x1B[0m
@@ -44,6 +44,8 @@ Arguments:
 
     if arg == "-help":
         return help_string
+    elif arg == "-version":
+        return VERSION
     elif arg == "-logical-cores":
         return computer.cpu_cores("logical")
     elif arg == "-physical-cores":
@@ -63,11 +65,11 @@ Arguments:
     elif arg == "-gpuname":
         return computer.gpu_prettyname()
     elif arg == "-ram":
-        if sys.argv[2].strip() not in ramunits:
+        if sys.argv[2].strip() not in RAMUNITS:
             print("""
 Invalid RAM units or no unit provided.
 To view syntax for this command, use\x1B[3m platforminfo -help\x1B[0m
 """)
-            sys.exir()
+            sys.exit()
         else:
             return computer.ram({sys.argv[2]})

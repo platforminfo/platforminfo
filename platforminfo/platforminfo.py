@@ -64,14 +64,56 @@ class Platform:
         }
 
         # finding platform:
-        for i in bases.keys():
-            if i in sys.platform:
-                self.platform = bases[sys.platform]
+        if "bsd" in sys.platform:
+            self.platform == "bsd"
+        else:
+            self.platform = bases[sys.platform]
 
     def base_platform(self):
+        """
+        base_platform
+        -------------
+        **Purpose:**
+        This function returns the base OS of your system.
+        -------------------------------------------------
+        **Compatibility:**
+        macOS, Windows, Linux, BSD
+        --------------------------
+        **Output:**
+        string value in ["windows", "mac", "linux", "bsd"]
+        ---------------------------------------
+        **Example:**
+        System: Fedora 39 KDE
+        Output: "linux"
+
+        System: macOS 13
+        Output: "mac"
+        """
         return self.platform
 
     def desktop_environment(self):
+        """
+        desktop_environment
+        -------------
+        **Purpose:**
+        This function returns your Linux/BSD system's desktop environment.
+        -------------------------------------------------
+        **Compatibility:**
+        Linux, BSD
+        --------------------------
+        **Output:**
+        string value
+        ---------------------------------------
+        **Example:**
+        System: Fedora 39 KDE
+        Output: "KDE"
+
+        System: Linux Mint Cinnamon
+        Output: "Cinnamon"
+
+        System: Ubuntu 23.10
+        Output: "GNOME"
+        """
         if self.platform not in ["linux", "bsd"]:
             raise PlatformError(
                 'Desktop environment property used on a non-Linux/BSD system')
@@ -80,6 +122,25 @@ class Platform:
             return env
 
     def kernel_version(self):
+        """
+        kernel_version
+        -------------
+        **Purpose:**
+        This function returns your system's kernel version. This does not include the kernel type,
+        -------------------------------------------------
+        **Compatibility:**
+        Linux, BSD, macOS, Windows
+        --------------------------
+        **Output:**
+        string value
+        ---------------------------------------
+        **Example:**
+        System: Fedora 39 KDE
+        Output: "6.7.3-200.fc39.x86_64"
+
+        System: Windows 8.1
+        Output: "6.3"
+        """
         if self.platform in ["mac", "linux", "bsd"]:
             kernel = subprocess.Popen("uname -r",
                                       shell=True,
@@ -95,8 +156,28 @@ class Platform:
             return version
 
     def os_architecture(self):
+        """
+        os_architecture
+        -------------
+        **Purpose:**
+        This function returns your operating system's architecture.
+        -------------------------------------------------
+        **Compatibility:**
+        Linux, BSD, Windows
+        --------------------------
+        **Output:**
+        string value
+        ---------------------------------------
+        **Example:**
+        System: Fedora 39 KDE (AMD Ryzen)
+        Output: "x86_64"
+
+        System: Windows 11 (Snapdragon ARM)
+        Output: "aarch64"
+        """
         if self.platform == "windows":
             arch = os.environ['PROCESSOR_ARCHITECTURE']
+            # this only includes modern Windows architectures, FIXME: add 32-bit Windows
             arches = {'AMD64': 'x86_64', 'ARM64': 'aarch64'}
             return arches[arch.upper()]
         else:
@@ -312,3 +393,8 @@ class Platform:
                     "sysctl hw.realmem", shell=True,
                     stdout=subprocess.PIPE)).split(":"))[1].strip())
             return int(ram) / dataunits[dataunit][0]**dataunits[dataunit][1]
+
+
+x = Platform()
+
+x.base_platform()
