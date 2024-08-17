@@ -5,7 +5,7 @@ orbs:
 executors:
   my-custom-executor:
     docker:
-      - image: clearlinux/python:3.12
+      - image: clearlinux
         auth:
           # ensure you have first added these secrets
           # visit app.circleci.com/settings/project/github/platforminfo/platforminfo/environment-variables
@@ -27,6 +27,7 @@ jobs:
     steps:
       - checkout
       - run: |
+      	   	msudo swupd bundle-add python-basic
           pip3 install yapf setuptools poetry
           python3 -m poetry build
           mv dist/ /tmp/dist
