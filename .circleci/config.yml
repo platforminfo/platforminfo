@@ -27,7 +27,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          sudo swupd bundle-add python-basic
+          swupd bundle-add python-basic
           pip3 install yapf setuptools poetry
           python3 -m poetry build
           mv dist/ /tmp/dist
