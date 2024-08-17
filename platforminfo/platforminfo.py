@@ -42,15 +42,12 @@ class PlatformError(Exception):
 def parse_file(filename, to_be_cut, basestr):
     with open(filename) as file:
         x = dict()
-        for line in file:
-            x[(line.split(to_be_cut)[0]).strip()] = (
-                line.split(to_be_cut)[1]).strip()
-
-            if (line.split(to_be_cut)[0]).strip() == basestr:
+        for line in file.readlines():
+            line_lst = [x.strip() for x in line.split(to_be_cut)]
+            x[line_lst[0]] = line_lst[1]
+            if line_lst[0] == basestr:
                 break
-
-        return_value = x[basestr].strip()
-    return return_value
+        return x[basestr]
 
 
 class Platform:
@@ -64,9 +61,8 @@ class Platform:
         }
 
         # finding platform:
-        for i in bases.keys():
-            if i in sys.platform:
-                self.platform = bases[sys.platform]
+        self.platform = bases[
+            sys.platform] if sys.platform in bases.keys() else sys.platform
 
     def base_platform(self):
         return self.platform
@@ -76,8 +72,7 @@ class Platform:
             raise PlatformError(
                 'Desktop environment property used on a non-Linux/BSD system')
         else:
-            env = os.environ['XDG_CURRENT_DESKTOP']
-            return env
+            return os.environ['XDG_CURRENT_DESKTOP']
 
     def kernel_version(self):
         if self.platform in ["mac", "linux", "bsd"]:
@@ -96,9 +91,10 @@ class Platform:
 
     def os_architecture(self):
         if self.platform == "windows":
-            arch = os.environ['PROCESSOR_ARCHITECTURE']
+            arch = (os.environ['PROCESSOR_ARCHITECTURE']).upper()
             arches = {'AMD64': 'x86_64', 'ARM64': 'aarch64'}
-            return arches[arch.upper()]
+            retval = arches[arch] if arch in arches else arch
+            return retval
         else:
             return subprocess_postproc(
                 subprocess.Popen("uname -m",
@@ -123,7 +119,7 @@ class Platform:
             return value
         else:
             raise PlatformError(
-                "PlatformInfo: buildnumber function used on a non-Macintosh/Windows system"
+                "PlatformInfo: buildnumber function is only compatible with Macintosh and Windows-based systems"
             )
 
     def os_version(self):
@@ -188,49 +184,62 @@ class Platform:
                     stdout=subprocess.PIPE)).split(":")[1].strip()
             return cpu
 
-    def cpu_cores(self, coreop):
-        if self.platform == "linux":
-            coretypes = {"physical": 'cpu cores', "logical": 'siblings'}
-            return int(parse_file("/proc/cpuinfo", ":", coretypes[coreop]))
+    def cpu_cores(self, coreop="none"):
+        if coreop == "none":
+            print("""
+            Please specify a core type.
+                  
+            Options are:
+              physical
+              logical
 
-        elif self.platform == "windows":
-            coretypes_win = {
-                "physical": "NumberOfCores",
-                "logical": "NumberOfLogicalProcessors"
-            }
-            cores = subprocess_postproc(
-                subprocess.Popen(
-                    f"wmic cpu get {coretypes_win[coreop]} /VALUE",
-                    stdout=subprocess.PIPE,
-                )).split("=")[1]
-            return cores
+            Syntax: \x1B[3mplatforminfo_class\x1B[0m.cpu_cores(coretype)
+            """)
+        else:
+            if self.platform == "linux":
+                coretypes = {"physical": 'cpu cores', "logical": 'siblings'}
+                return int(parse_file("/proc/cpuinfo", ":", coretypes[coreop]))
 
-        elif self.platform == 'bsd':
-            cores = int((subprocess_postproc(
-                subprocess.Popen(
-                    "sysctl hw.ncpu", shell=True,
-                    stdout=subprocess.PIPE)).split(":"))[1].strip())
-
-            if coreop == "physical":
-                return str(cores)
-            else:
-                threads = int((subprocess_postproc(
+            elif self.platform == "windows":
+                coretypes_win = {
+                    "physical": "NumberOfCores",
+                    "logical": "NumberOfLogicalProcessors"
+                }
+                cores = subprocess_postproc(
                     subprocess.Popen(
-                        "sysctl kern.smp.threads_per_core",
+                        f"wmic cpu get {coretypes_win[coreop]} /VALUE",
+                        stdout=subprocess.PIPE,
+                    )).split("=")[1]
+                return cores
+
+            elif self.platform == 'bsd':
+                cores = int(
+                    (subprocess_postproc(
+                        subprocess.Popen(
+                            "sysctl hw.ncpu",
+                            shell=True,
+                            stdout=subprocess.PIPE)).split(":"))[1].strip())
+
+                if coreop == "physical":
+                    return str(cores)
+                else:
+                    threads = int((subprocess_postproc(
+                        subprocess.Popen(
+                            "sysctl kern.smp.threads_per_core",
+                            shell=True,
+                            stdout=subprocess.PIPE)).split(":"))[1].strip())
+                    return str(cores * threads)
+            elif self.platform == "mac":
+                coretypes_mac = {
+                    "physical": "core_count",
+                    "logical": "thread_count"
+                }
+                cores = subprocess_postproc(
+                    subprocess.Popen(
+                        f"sysctl machdep.cpu.{coretypes_mac[coreop]}",
                         shell=True,
-                        stdout=subprocess.PIPE)).split(":"))[1].strip())
-                return str(cores * threads)
-        elif self.platform == "mac":
-            coretypes_mac = {
-                "physical": "core_count",
-                "logical": "thread_count"
-            }
-            cores = subprocess_postproc(
-                subprocess.Popen(
-                    f"sysctl machdep.cpu.{coretypes_mac[coreop]}",
-                    shell=True,
-                    stdout=subprocess.PIPE)).split(":")[1].strip()
-            return cores
+                        stdout=subprocess.PIPE)).split(":")[1].strip()
+                return cores
 
     def gpu_prettyname(self):
         if self.platform == "windows":
@@ -255,10 +264,14 @@ class Platform:
             return gpu
 
         elif self.platform == "linux":
-            gpu = subprocess_postproc(subprocess.Popen(
-                'glxinfo | grep Device', shell=True, stdout=subprocess.PIPE)).split(":")[1].split("(")[0].strip()
+            gpu = subprocess_postproc(
+                subprocess.Popen('glxinfo | grep Device',
+                                 shell=True,
+                                 stdout=subprocess.PIPE)).split(":")[1].split(
+                                     "(")[0].strip()
+            return gpu
 
-    def ram(self, dataunit):
+    def ram(self, dataunit="none"):
         # dataunit code consists of the unit and the power. PlatformInfo raises the number to the power when converted.
         dataunits = {
             "KiB": [1024, 1],
@@ -292,8 +305,6 @@ class Platform:
                 return int(
                     ram) / dataunits[dataunit][0]**dataunits[dataunit][1]
         elif self.platform == 'linux':
-            # On Linux, the code excludes system reserved RAM. On Windows and macOS, implementations include system reserved RAM/
-            # This will hopefully be resolved for all platforms, allowing the user to choose whether to represent reserved memory or not.
             ram = parse_file("/proc/meminfo", ":", "MemTotal")
             x = ram.split()
             return (int(x[0]) * dataunits[x[1]][0]**dataunits[x[1]][1]
@@ -307,8 +318,10 @@ class Platform:
             return int(ram) / dataunits[dataunit][0]**dataunits[dataunit][1]
 
         elif self.platform == "bsd":
-            ram = int((subprocess_postproc(
-                subprocess.Popen(
-                    "sysctl hw.realmem", shell=True,
-                    stdout=subprocess.PIPE)).split(":"))[1].strip())
+            ram = int(
+                (subprocess_postproc(
+                    subprocess.Popen(
+                        "sysctl hw.realmem",
+                        shell=True,
+                        stdout=subprocess.PIPE)).split(":"))[1].strip())
             return int(ram) / dataunits[dataunit][0]**dataunits[dataunit][1]

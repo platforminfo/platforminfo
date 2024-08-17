@@ -1,7 +1,7 @@
 import platforminfo
 import sys
 
-VERSION = "1.0.0beta5.post2"
+VERSION = "1.0.0"
 computer = platforminfo.Platform()
 
 
