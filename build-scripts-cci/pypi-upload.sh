@@ -1,5 +1,7 @@
 set -e
 
+swupd bundle-add python-basic
+
 PYPI_CONFIG="${HOME}/.pypirc"
 pip install --upgrade pip
 pip install twine
