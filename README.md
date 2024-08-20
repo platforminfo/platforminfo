@@ -10,7 +10,8 @@
 
 </span>
 
-[![asciicast](https://asciinema.org/a/606618.svg)](https://asciinema.org/a/606618)
+![test](https://github.com/user-attachments/assets/319e30ef-823c-4505-b90a-ff1e5c4f9e6a)
+
 
 System info for Python made simple.
 PlatformInfo is designed to provide a simple, yet granular interface to find system information on all major operating systems within Python.
